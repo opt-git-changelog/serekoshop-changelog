@@ -2,7 +2,7 @@
  * This file contains some integration with the native Shopify Reviews app to style it in the context of the theme.
  */
 
-import {Delegate} from "//serekoshop.com/cdn/shop/t/28/assets/vendor.min.js?v=56430842210900357591706779321";
+import {Delegate} from "//serekoshop.com/cdn/shop/t/30/assets/vendor.min.js?v=56430842210900357591706871009";
 
 const _transformForm = (spr) => {
   const labels = Array.from(spr.querySelectorAll('.spr-form-label')),

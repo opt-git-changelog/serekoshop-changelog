@@ -1,0 +1,230 @@
+<!-- BEGIN app block: shopify://apps/pixee-multi-facebook-pixels/blocks/facebook-pixel/61bbb1d9-d4be-4d08-879a-ee3ccb59f558 -->
+  <script type="lazyload_js">
+    let hso_shopify_unique_id = document
+    .cookie
+    .split(";")
+    .filter((c) => c.includes("_shopify_y="))
+    .map((c) => c.split("_shopify_y=")[1]);
+
+  hso_shopify_unique_id = (hso_shopify_unique_id.length && hso_shopify_unique_id[0]) || "";
+
+  const hsoFBMatchingData = {
+    em: "",
+    fn: "",
+    ln: "",
+    ph: "",
+    external_id: hso_shopify_unique_id,
+    ge: "",
+    db: "",
+    ct: "",
+    st: "",
+    zp: "",
+    country: ""
+  };
+  function CAPI(event, eventData) {
+    let fbp = document
+      .cookie
+      .split(";")
+      .filter((c) => c.includes("_fbp="))
+      .map((c) => c.split("_fbp=")[1]);
+    let fbc = document
+      .cookie
+      .split(";")
+      .filter((c) => c.includes("_fbc="))
+      .map((c) => c.split("_fbc=")[1]);
+    fbp = (fbp.length && fbp[0]) || null;
+    fbc = (fbc.length && fbc[0]) || null;
+
+    if (! fbc && window.location.search.includes("fbclid=")) {
+      fbc = "fb.1." + + new Date() + "." + window.location.search.split("fbclid=")[1];
+    }
+
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+
+    const body = {
+      event: event,
+      event_data: eventData,
+      fbp: fbp,
+      fbclid: fbc,
+      user_agent: navigator.userAgent,
+      url: window.location.origin + window.location.pathname,
+      current_timestamp: Math.floor(new Date() / 1000),
+      myShopifyDomain: Shopify.shop,
+      ... hsoFBMatchingData
+    };
+
+    const options = {
+      method: "POST",
+      headers,
+      mode: "cors",
+      body: JSON.stringify(body)
+    };
+    fetch("https://fca.gropulse.com/fb-conversion-api", options);
+  };
+  !function(f, b, e, v, n, t, s) {
+    if (f.fbq)
+      return;
+
+
+    n = f.fbq = function() {
+      n.callMethod
+        ? n.callMethod.apply(n, arguments)
+        : n.queue.push(arguments)
+    };
+    if (! f._fbq)
+      f._fbq = n;
+
+
+    n.push = n;
+    n.loaded = !0;
+    n.version = '2.0';
+    n.queue = [];
+    t = b.createElement(e);
+    t.async = !0;
+    t.src = v;
+    s = b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t, s)
+  }(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js');
+  
+fbq('init', '', hsoFBMatchingData);
+
+  window.Shopify.loadFeatures([
+      {
+        name: "consent-tracking-api",
+        version: "0.1"
+      }
+    ], (error) => {
+      if (error) {
+        throw error;
+      }
+      const isTrackingConsentGiven = !null || Shopify.customerPrivacy.getTrackingConsent() !== "no";
+      if (isTrackingConsentGiven) {
+          window.addEventListener("load", (event) => {
+          window.fbq = window.fbq || function() {};
+          fbq('track', 'PageView');
+          CAPI("PageView")
+          const basePixelLoadedEvent = new Event("pixee_base_pixel_loaded");
+          window.dispatchEvent(basePixelLoadedEvent);
+        });
+      }
+    });
+  </script>
+
+<script type="lazyload_js">
+    function helloFPACheckCart() {
+
+/**
+       *
+       * @param {Array} dataList
+       * @param {Object} singleData
+       */
+      const isDataUseable = (dataList, checkData) => {
+        if (dataList.length === 0)
+          return checkData;
+
+
+
+        for (let index = 0; index < dataList.length; index++) {
+          const singleData = dataList[index];
+          if (singleData.id === checkData.id) {
+            if (checkData.quantity > singleData.quantity) {
+              const newData = {
+                ...checkData,
+                quantity: checkData.quantity - singleData.quantity
+              };
+              return newData;
+            } else {
+              return false;
+            }
+          }
+        }
+        return checkData;
+      };
+
+/**
+       *
+       * @param {Array} localStoreData
+       * @param {Array} newFetchData
+       */
+      const checkAddToACart = (localStoreData, newFetchData) => {
+        return newFetchData.map((singleFetchData) => isDataUseable(localStoreData, singleFetchData)).filter(Boolean);
+      };
+
+      const addToCartFire = (cartData, rowData) => {
+        const fireData = {
+          content_type: "product",
+          content_ids: cartData.map(function(e) {
+            return e.variant_id;
+          }),
+          contents: cartData.map(function(e) {
+            return {id: e.product_id, quantity: e.quantity};
+          }),
+          content_name: cartData.map(function(e) {
+            return e.title;
+          }).join(", "),
+          currency: rowData.currency,
+          value: cartData.reduce(
+            (total, item) => total + (item.price / 100) * item.quantity,
+            0
+          )
+        };
+
+        const hfpFireEvent = window.fbq || function() {};
+        const hfpEventName = "AddToCart";
+        hfpFireEvent("track", hfpEventName, fireData);
+        CAPI(hfpEventName, fireData);
+      };
+
+      setInterval(function() {
+        fetch("/cart.js").then((response) => response.json()).then((data) => {
+          const lsData = JSON.parse(localStorage.getItem("hello-fpa-cart-data")) || [];
+          const fetchData = data.items;const addToCart = checkAddToACart(lsData, fetchData);
+            addToCart.length !== 0 && addToCartFire(addToCart, data);localStorage.setItem("hello-fpa-cart-data", JSON.stringify(fetchData));
+        });
+      }, 3000);
+    }
+
+    window.addEventListener("pixee_base_pixel_loaded", helloFPACheckCart);
+
+  </script>
+    <script type="lazyload_js">
+      window.addEventListener("pixee_base_pixel_loaded", (event) => {
+        (function() {
+          const hfpFireEvent = window.fbq || function() {};
+          const hfpEventName = "InitiateCheckout";
+          function fireInitiateCheckout(catData) {
+            const fireData = {
+              content_type: "product",
+              content_ids: catData.items.map((item) => item.variant_id),
+              contents: catData.items.map((item) => ({id: item.product_id, quantity: item.quantity})),
+              num_items: catData.items.length,
+              value: catData.items_subtotal_price / 100,
+              currency: catData.currency
+            };
+            hfpFireEvent("track", hfpEventName, fireData);
+            CAPI(hfpEventName, fireData);
+          }
+
+          function checkoutButtonClickHandler() {
+            fetch("/cart.js").then((response) => response.json()).then((data) => {
+              fireInitiateCheckout(data);
+            });
+          }
+
+          window.hso_fpa_checkoutButtonClickHandler = checkoutButtonClickHandler;
+
+          if (document.querySelectorAll("[name='checkout']").length !== 0) {
+            document.querySelectorAll("[name='checkout']").forEach(singleButton => {
+              singleButton.addEventListener("click", checkoutButtonClickHandler);
+            })
+          }
+          if (document.querySelectorAll("[href='/checkout']").length !== 0) {
+            document.querySelectorAll("[href='/checkout']").forEach(singleButton => {
+              singleButton.addEventListener("click", checkoutButtonClickHandler);
+            })
+          }
+        })();
+      });
+    </script>
+<!-- END app app block -->

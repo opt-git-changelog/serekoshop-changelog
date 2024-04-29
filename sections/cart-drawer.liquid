@@ -32,6 +32,13 @@
           </button>
         </div>
 
+        <div>
+          <ul style="font-size: 15px; letter-spacing: .5px; padding: 3px !important; line-height: initial; list-style: outside;">
+            <li><h2 class="free-shipping-drawer">Check out the BOGO offer on our Nutrition Range!</h2></li>
+            <li><h2 class="free-shipping-drawer">Free Shipping on all orders!</h2></li>
+          </ul>
+        </div>
+
         {%- if settings.cart_show_free_shipping_threshold -%}
           {%- render 'free-shipping-bar' -%}
         {%- endif -%}
@@ -149,7 +156,7 @@
         {%- assign view_cart_label = 'cart.general.view_cart' | t -%}
         {%- assign checkout_label = 'cart.general.checkout' | t -%}
 
-        {%- render 'button', href: routes.cart_url, content: view_cart_label, secondary: section.settings.show_checkout_button, size: 'xl' -%}
+      <!--  {%- render 'button', href: routes.cart_url, content: view_cart_label, secondary: section.settings.show_checkout_button, size: 'xl' -%} -->
 
         {%- if section.settings.show_checkout_button -%}
           {% render 'gokwik-checkout' %}

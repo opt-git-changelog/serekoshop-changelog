@@ -40,21 +40,18 @@ Supported variables
           {%- endif -%}
         {%- endif -%}
 
-      
       {% for tag in product.tags %}
         {% if tag contains 'bestseller' %}
-          <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/best-seller.png?v=1698309329" alt="Bestseller" width="100" height="100" class="bestseller-tag">
-          {% endif %}
-        {% endfor %}
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-class="LazyLoad" data-src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/best-seller.png?v=1698309329" alt="Bestseller" width="100" height="100" class="bestseller-tag">
+        {% endif %}
+      {% endfor %}
 
       {% for tag in product.tags %}
         {% if tag contains 'diwali' %}
-          <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/best-seller.png?v=1698309329" alt="Bestseller" width="100" height="100" class="bestseller-tag">
-          {% endif %}
-        {% endfor %}
+          <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" data-class="LazyLoad" data-src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/best-seller.png?v=1698309329" alt="Bestseller" width="100" height="100" class="bestseller-tag">
+        {% endif %}
+      {% endfor %}
      
-      
-
       {%- when 'discount' -%}
         {%- if settings.show_discount -%}
           {%- assign is_variant_on_sale = false -%}
@@ -85,6 +82,10 @@ Supported variables
         {%- endif -%}
     {%- endcase -%}
   {%- endfor -%}
+  
+  {% if product.tags contains 'BOGO' %}
+    <span class="badge badge--bogo">B1G1</span>
+  {% endif %}
 {%- endcapture -%}
 
 {%- if badges != blank -%}

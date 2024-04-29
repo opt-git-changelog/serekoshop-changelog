@@ -1,0 +1,81 @@
+<style>
+.js [reveal-js], .js [reveal-on-scroll=true] {
+    opacity: 1 !important;
+}
+
+.js reveal-items {
+    opacity: 1 !important;
+}
+
+.slideAbove {
+   opacity: 1 !important;
+}
+
+@media(min-width:1200px){
+.index-template .shopify-section--featured-collection  .swiper-container.product-grid-slider:not(.swiper-initialized) .product-list {
+    display: grid !important;
+    grid-template-columns: repeat(3,1fr);
+    column-gap: 20px;
+}
+
+.index-template .shopify-section--featured-collection .swiper-container.product-grid-slider:not(.swiper-initialized) .product-list .product-card:nth-child(n+4) {
+    display: none;
+}
+
+html:not(.appco_start)  .index-template  .shopify-section--slideshow .slideshow__carousel img{
+    aspect-ratio: 1437/513;
+}
+  
+}
+
+@media(max-width:767px){
+.index-template .shopify-section--featured-collection  .swiper-container.product-grid-slider:not(.swiper-initialized) .product-list {
+    display: grid !important;
+    grid-template-columns: repeat(2,1fr);
+    column-gap: 20px;
+}
+
+.index-template .shopify-section--featured-collection .swiper-container.product-grid-slider:not(.swiper-initialized) .product-list .product-card:nth-child(n+3) {
+    display: none;
+}
+
+.index-template .shopify-section--featured-collection .swiper-container.product-grid-slider:not(.swiper-initialized) .product-list .product-card .product-card__badge-list  img {
+    max-width: 50px;
+    position: absolute !important;
+}
+
+.index-template .shopify-section--featured-collection .swiper-container.product-grid-slider:not(.swiper-initialized) .product-list .product-card .product-card__badge-list {
+    width: 100%;
+    left: 0;
+    top: 0;
+}
+
+html:not(.appco_start)  .index-template  .shopify-section--slideshow .slideshow__carousel img{
+    aspect-ratio: 375/160;
+}
+}
+
+.index-template .shopify-section--featured-collection .section-header .slideUp .h2 {
+    animation: none !important;
+    transform: unset !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.collection  .collection__results  .product-list .product-card {
+    opacity: 1 !important;
+    transform: translateY(0px) !important;
+}
+
+@media(max-width:767px){
+.product-page-template .product  .product-gallery__media-list:not(.is-scrollable) .product-gallery__media:nth-child(n+3) {
+    display: none;
+}
+}
+
+@media(min-width:767px){
+  html {overflow-x: hidden;}
+}
+
+.product-page-template .product-gallery__media-list-wrapper video-media {border-radius: 1.25rem;overflow: hidden;}
+</style>

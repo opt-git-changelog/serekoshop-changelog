@@ -9,6 +9,10 @@
   {% assign starColor = shop.metafields.automizely_reviews.star_color | default: '#FFB303' %}
   {% assign starFontColor = shop.metafields.automizely_reviews.star_font_color | default: '#212B36' %}
   {% assign blockAlign = blockAlign | default: 'flex-start' %}
+  {% assign min = 1 %}
+  {% assign max = 100000 %}
+  {% assign diff = max | minus: min %}
+  {% assign randomNumber = "now" | date: "%N" | modulo: diff | plus: min %}
 
   {% capture count %}
 {{ fulfillStar }},{% if partiallyFulfillStar != 0%}1{% else %}0{% endif %}},{{ emptyStar }}
@@ -38,7 +42,7 @@
             xmlns:xlink="http://www.w3.org/1999/xlink"
           >
             <defs>
-             <clipPath id="clip_{{ forloop.parentloop.index0 }}_{{ forloop.index0 }}">
+             <clipPath id="clip_{{ forloop.parentloop.index0 }}_{{ forloop.index0 }}_{{ randomNumber }}">
               <path
                d="M12,0.145898039 L8.47328849,7.29179607 L0.587321804,8.43769411 L6.2936609,14 L4.94657697,21.854102 L12,18.145898 L19.053423,21.854102 L17.7063391,14 L23.4126782,8.43769411 L15.5267115,7.29179607 L12,0.145898039 Z"
               />
@@ -47,20 +51,19 @@
             <rect
              x="0"
              y="0"
-             width="24%"
+             width="24"
              height="24"
-             clip-path="url(#clip_{{ forloop.parentloop.index0 }}_{{ forloop.index0 }})"
+             clip-path="url(#clip_{{ forloop.parentloop.index0 }}_{{ forloop.index0 }}_{{ randomNumber }})"
              style="fill: #DFE3E8;"
             />
             <rect
-              x="0"
-              y="0"
-              width="{{ percentage[forloop.parentloop.index0] | remove: '\n' }}%"
-              height="24"
-              clip-path="url(#clip_{{ forloop.parentloop.index0 }}_{{ forloop.index0 }})"
-              style="fill: {{ starColor }}"
-              />
-
+             x="0"
+             y="0"
+             width="{{ percentage[forloop.parentloop.index0] }}%"
+             height="24"
+             clip-path="url(#clip_{{ forloop.parentloop.index0 }}_{{ forloop.index0 }}_{{ randomNumber }})"
+             style="fill: {{ starColor }}"
+            />
           </svg>
         </div>
       {% endfor %}

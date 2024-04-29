@@ -1,6 +1,6 @@
 .country-flags {
-  background: -webkit-image-set(url("//serekoshop.com/cdn/shop/t/28/assets/country-flags.png?v=37230036826556269641706779321") 1x, url("//serekoshop.com/cdn/shop/t/28/assets/country-flags-2x.png?v=119388446682176363021706779321") 2x) no-repeat top left;
-  background: image-set(url("//serekoshop.com/cdn/shop/t/28/assets/country-flags.png?v=37230036826556269641706779321") 1x, url("//serekoshop.com/cdn/shop/t/28/assets/country-flags-2x.png?v=119388446682176363021706779321") 2x) no-repeat top left;
+  background: -webkit-image-set(url("//serekoshop.com/cdn/shop/t/30/assets/country-flags.png?v=37230036826556269641706871009") 1x, url("//serekoshop.com/cdn/shop/t/30/assets/country-flags-2x.png?v=119388446682176363021706871009") 2x) no-repeat top left;
+  background: image-set(url("//serekoshop.com/cdn/shop/t/30/assets/country-flags.png?v=37230036826556269641706871009") 1x, url("//serekoshop.com/cdn/shop/t/30/assets/country-flags-2x.png?v=119388446682176363021706871009") 2x) no-repeat top left;
   width: 20px;
   height: 20px;
   flex-shrink: 0;

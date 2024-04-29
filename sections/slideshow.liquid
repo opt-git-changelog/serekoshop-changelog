@@ -74,9 +74,17 @@ LIQUID
             {%- if block.settings.mobile_image == blank -%}
               {{- block.settings.image | image_url: width: block.settings.image.width | image_tag: loading: loading_strategy, fetchpriority: fetch_priority, title:block.settings.subheading, alt:block.settings.subheading, sizes: sizes, widths: '200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800,2000,2200,2400,2600,2800,3000,3200' -}}
             {%- else -%}
-              {{- block.settings.image | image_url: width: block.settings.image.width | image_tag: loading: loading_strategy, fetchpriority: fetch_priority, title:block.settings.subheading, alt:block.settings.subheading, sizes: sizes, widths: '200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800,2000,2200,2400,2600,2800,3000,3200', class: 'hidden sm:block' -}}
-              {{- block.settings.mobile_image | image_url: width: block.settings.mobile_image.width | image_tag: loading: loading_strategy, fetchpriority: fetch_priority, title:block.settings.subheading, alt:block.settings.subheading, sizes: sizes, widths: '200,300,400,500,600,700,800,900,1000,1200,1400,1600,1800,2000,2200,2400,2600,2800,3000,3200', class: 'sm:hidden' -}}
-            {%- endif -%}
+          
+              <img
+              data-class="LazyLoad"
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="  
+  			  data-src="{{- block.settings.image | image_url: width: 1524 -}}"
+              data-mob-src="{{- block.settings.mobile_image | image_url: width: 580 -}}"  
+  			  alt="{{- block.settings.subheading -}}"
+              title="{{- block.settings.subheading -}}"
+  			 />
+              
+              {%- endif -%}
           {%- else -%}
             {%- capture placeholder_image -%}{% cycle 'placeholder': 'lifestyle-1', 'lifestyle-2' %}{%- endcapture -%}
             {{- placeholder_image | placeholder_svg_tag: 'placeholder' | replace: '<svg', '<svg preserveAspectRatio="xMinYMin slice"' -}}

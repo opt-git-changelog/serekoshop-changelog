@@ -333,14 +333,14 @@
         {%- else -%}
           {%- if product.description != blank -%}
             <div class="product-info__description_two animate slideAbove">
-              <div class="prose four_line">
+              <div class="prose four_line hidden">
+                <!--{{- product.description -}}-->
+              </div>
+              <p class="hidden"><a class="read_more_desc hidden">Read More</a></p>
+              <div class="prose full_desc">
                 {{- product.description -}}
               </div>
-              <p><a class="read_more_desc">Read More</a></p>
-              <div class="prose full_desc hidden">
-                {{- product.description -}}
-              </div>
-              <p class=" read_less_p hidden"><a class="read_less_desc">Read Less</a></p>
+              <p class=" read_less_p hidden"><a class="read_less_desc hidden">Read Less</a></p>
             </div>
           {%- endif -%}
         {%- endif -%}

@@ -79,8 +79,8 @@
   {%- endunless -%}
 {%- endif -%}
 
-<script>
-  $(document).ready(function(){
+<script type="lazyload_js">
+ setTimeout(function() {
     $(document).on("click", ".newsletter-drawer__content form .button", function(e){
       e.preventDefault();
       var $form = $(".newsletter-drawer__content").find("form");
@@ -116,7 +116,7 @@
     $(document).on("click", ".popup_close_txt", function(){
       $("newsletter-popup").find(".mob_cls").trigger("click");
     })
-  });
+  },1000);
 </script>
 
 {% schema %}

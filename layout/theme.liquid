@@ -11,12 +11,21 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
 
 <html class="no-js" lang="{{ request.locale.iso_code }}" dir="{% render 'direction' %}">
   <head>
+  {% render 'header_file' %}
   {% render 'gokwik' %}
   <meta name="facebook-domain-verification" content="ok21wo4yaq0zgl8moe3ml7yacglfu6" />
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0, maximum-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="{{ settings.header_background }}">
+
+    <!-- Google Tag Manager -->
+<script type="lazyload_js">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MB3FNBF');</script>
+<!-- End Google Tag Manager -->
 
     <title>{% if page_title == blank %}{{ shop.name }}{% else %}{{ page_title }}{% if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif %}{% endif %}</title>
     
@@ -60,13 +69,26 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     {%- render 'css-variables' -%}
     {%- render 'js-variables' -%}
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
-  
-    <script src="{{ 'kwikpass-core-functions.js' | asset_url }}" ></script>
+    
+    {% if template contains "product" %}
+		<script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+	{% else %}
+		<script type="lazyload_js" data-src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>	
+	{% endif %}
+    
+    <script type="lazyload_js" data-src="https://pdp.gokwik.co/kwikpass/kwikpass-core-functions.js"></script>
+    {%- if request.design_mode or template contains 'cart' or template contains 'checkout' -%}
+            {{ content_for_header }}
+    {%- else -%}
+            {% capture content_for_header2 %}{{ content_for_header }}{% endcapture %}
+            {{ content_for_header2 | replace: ' defer="defer" ', ' type="lazyload_js" ' | replace: " src=", " data-src="| replace: "DOMContentLoaded", "appco-DOMContentLoaded" | replace: "window.addEventListener('load', asyncLoad, false);", "window.addEventListener('appco-DOMContentLoaded', asyncLoad, false);" | replace: "addEventListener('load', prefetchAssets);", "addEventListener('appco-DOMContentLoaded', prefetchAssets);" }}
+            <script>var trekkie=[];trekkie.integrations=!0;window.BOOMR={},window.BOOMR.version=true;</script>
+    {%- endif -%}
 
-    {{ content_for_header }}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" media="All">
-    <link href="{{ 'theme.css' | asset_url }}" rel="stylesheet" type="text/css" media="all">
+    {%- render 'theme-css' -%}
+    {%- render 'theme-css2' -%}
+    <link rel="stylesheet" data-href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+    <link data-href="{{ 'theme.css' | asset_url }}" rel="stylesheet">
 
     <!-- Google tag ads account (gtag.js)  -->
     <script type="lazyload_js" data-src="https://www.googletagmanager.com/gtag/js?id=AW-11145937595"></script>
@@ -79,7 +101,7 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     </script>
   
     
-  <script type='application/ld+json'>
+<script type='application/ld+json'>
 {	
 "@context": "http://www.schema.org",
 "@type": "localbusiness",
@@ -130,7 +152,7 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
  }
 	</script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" media="all">
+    <link rel="stylesheet" data-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
         #sy-whatshelp {
             right: 25px;
@@ -164,7 +186,7 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
 
     </style>
 
-<!-- Meta Pixel Code -->
+    <!-- Meta Pixel Code -->
     <script type="lazyload_js">
     !function(f,b,e,v,n,t,s)
     {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -181,11 +203,17 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     src="https://www.facebook.com/tr?id=9505205456187073&ev=PageView&noscript=1"
     /></noscript>
     <!-- End Meta Pixel Code -->
-    
+
+    {% render 'custom-css' %}
+    {% render 'app-block' %}
   </head>
 
   <body class="{% if template contains 'index' %}index-template{% elsif template contains 'product' %}product-page-template{% endif %}{% if template contains 'page' and page.handle == 'our-science' %} our-science-page{% endif %}{% if template contains 'blog' and template.suffix == 'glossary' %} glossary-page{% endif %}{% if template contains 'article' %} article-page{% endif %}{% if settings.show_page_transition %} page-transition{% endif %} {% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}">
-    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=589450383245310&ev=PageView&noscript=1" alt="" loading="lazy">
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MB3FNBF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->    
     
     {%- render 'shadow-dom-templates' -%}
 
@@ -236,7 +264,7 @@ NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing
     {%- endif -%}
 
     <!-- Kwikpass script to add kwikpass button in the header - [Starts] -->
-<script>
+<script type="lazyload_js">
   // loader icon
   const loader = `<svg
 		class="loader"
@@ -685,14 +713,24 @@ const drawerhtmlDesktop = `<div id="kwikpass-drawer-desktop"  >
 </script>
 <!-- Kwikpass script to add kwikpass button in the header - [Ends] -->
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js" async></script>
-    <script type="module" src="{{ 'vendor.min.js' | asset_url }}"></script>
-    <script type="module" src="{{ 'theme.js' | asset_url }}"></script>
-    <script src="{{ 'writing-text.js' | asset_url }}" async></script>
-    <script type="module" src="{{ 'sections.js' | asset_url }}"></script>
+    
+
+    {% if template contains "product" %}
+    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js" async></script>
+        <script type="module" src="{{ 'vendor.min.js' | asset_url }}"></script>
+        <script type="module" src="{{ 'theme.js' | asset_url }}"></script>
+        <script src="{{ 'writing-text.js' | asset_url }}" async></script>
+        <script type="module" src="{{ 'sections.js' | asset_url }}"></script>	
+	{% else %}
+    	<script type="lazyload_js" data-src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script data-appco-type="module" type="lazyload_js" data-src="{{ 'vendor.min.js' | asset_url }}"></script>
+        <script data-appco-type="module" type="lazyload_js" data-src="{{ 'theme.js' | asset_url }}"></script>
+        <script type="lazyload_js" data-src="{{ 'writing-text.js' | asset_url }}"></script>
+        <script data-appco-type="module" type="lazyload_js" data-src="{{ 'sections.js' | asset_url }}"></script>		
+	{% endif %}
 
 
-      <script>
+<script>
 var acc = document.getElementsByClassName("accordionproductfaq");
 var i;
 
@@ -709,7 +747,7 @@ for (i = 0; i < acc.length; i++) {
 }
 </script>
 
-      <script>
+      <script type="lazyload_js">
     document.getElementById("contact_form").addEventListener("submit", function(event) {
       event.preventDefault();
       
@@ -745,19 +783,15 @@ for (i = 0; i < acc.length; i++) {
     });
   </script>
 
-      
-   <!-- REELKART SNIPPET -->
-<!-- <script src="https://js.reelkart.io/sdk.js?domain=serekoshop.com"></script> -->
-          <script src="https://reelkart.blob.core.windows.net/reelkart/sdk/v3/reelkart-sdk.js?domain=serekoshop.com"></script>
-
-<!-- REELKART SNIPPET --> 
-
+    
     <div id="sy-whatshelp">
         <a href="https://api.whatsapp.com/send?phone=917669006807&text=Hi" target="_blank" class="sywh-open-services " aria-label="WhatsApp Help" data-html="true" data-placement="left">
           <i class="fab fa-whatsapp"></i>
          </a>        
       </div>
   {% include 'kwikpass' %}
-
+  {% render 'footer_file' %}
+  {% render 'freegifts_change' %}
+  {% render 'footer-app-block' %}  
   </body>
 </html>

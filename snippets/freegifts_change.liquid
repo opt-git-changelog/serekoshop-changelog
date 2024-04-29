@@ -1,0 +1,23 @@
+<script>
+
+  Shopify.disable_override_fetch= true;
+
+  
+  document.addEventListener("fg-gifts:updated", async () => {
+    let cartContent = await fetch('/cart.js').then(async (scaRes) => {
+      return scaRes.json();
+    })
+    
+    await fetch("/?sections=cart-drawer,variant-added").then(async (scaRes) => {
+      cartContent["sections"] = await scaRes.json();
+    })
+    
+   document.documentElement.dispatchEvent(new CustomEvent("cart:change", {
+      bubbles: true,
+      detail: {
+        baseEvent: "line-item:change",
+        cart: cartContent
+      }
+    }))
+})
+</script>

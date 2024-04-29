@@ -4,7 +4,7 @@
 {% assign env = 'sandbox.pdp' %}
 {%endif%}
 
-<script>
+<script type="lazyload_js">
 {% if settings.goEnable %}
 window.merchantInfo  = {
         mid: "{{ settings.mid }}",
@@ -18,8 +18,8 @@ var cart = {{ cart | json }}
 var templateName = '{{template.name}}'
 </script>
 
-<script src="https://{{ env }}.gokwik.co/merchant-integration/build/merchant.integration.js?v4"></script>
-<script src="https://analytics.gokwik.co/analytics.js" id="gokwikHeaderAnalytics"></script>
+<script type="lazyload_js" data-src="https://{{ env }}.gokwik.co/merchant-integration/build/merchant.integration.js?v4"></script>
+<script type="lazyload_js" data-src="https://analytics.gokwik.co/analytics.js" id="gokwikHeaderAnalytics"></script>
 
 <style>
 {% if settings.goEnable %}
@@ -38,7 +38,7 @@ var templateName = '{{template.name}}'
   display: flex;
   justify-content: center;
   align-items: center;
-  background: {{ settings.priClr }};
+  background: #b6b8db;
   position: relative;
   margin: 0;
   padding: 5px 10px;
