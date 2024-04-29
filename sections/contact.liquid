@@ -1,0 +1,333 @@
+{%- render 'section-spacing-collapsing' -%}
+
+{%- assign text_position = section.settings.text_position -%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-stack-intro: {% if text_position == 'center' %}66.6667%{% else %}41.6667%{% endif %};
+    --section-stack-main: 58.3334%;
+  }
+</style>
+
+<div {% render 'section-properties', class: 'gap-12 v-stack' %}>
+  {%- assign text_position = section.settings.text_position -%}
+
+  {% comment %}
+  <div class="side-page-wrap">
+    <h1 class="h2 side-page-title">
+      {%- render 'styled-text', content: page.title -%}
+    </h1>
+  </div>
+  {% endcomment %}
+  <h1 class="h2 text-center">{{ page.title }}</h1>
+  
+  <div class="section-stack {% if text_position != 'center' %}section-stack--horizontal{% else %}section-stack--center{% endif %} {% if text_position == 'end' %}section-stack--reverse{% endif %}">
+    {%- capture content -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="bold">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+
+      {%- if section.settings.title != blank -%}
+        <h2 class="h2">
+          {%- render 'styled-text', content: section.settings.title, text_color: section.settings.heading_color, gradient: section.settings.heading_gradient -%}
+        </h2>
+      {%- endif -%}
+
+      {{- section.settings.content }}
+
+      {% if section.settings.phone_number != blank or section.settings.email != blank or section.settings.address != blank or section.settings.support_time != blank %}
+        <ul class="contact_ul">
+          {% if section.settings.phone_number != blank %}
+            <li>
+              <a href="tel:{{ section.settings.phone_number }}">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21.97 18.33C21.97 18.69 21.89 19.06 21.72 19.42C21.55 19.78 21.33 20.12 21.04 20.44C20.55 20.98 20.01 21.37 19.4 21.62C18.8 21.87 18.15 22 17.45 22C16.43 22 15.34 21.76 14.19 21.27C13.04 20.78 11.89 20.12 10.75 19.29C9.6 18.45 8.51 17.52 7.47 16.49C6.44 15.45 5.51 14.36 4.68 13.22C3.86 12.08 3.2 10.94 2.72 9.81C2.24 8.67 2 7.58 2 6.54C2 5.86 2.12 5.21 2.36 4.61C2.6 4 2.98 3.44 3.51 2.94C4.15 2.31 4.85 2 5.59 2C5.87 2 6.15 2.06 6.4 2.18C6.66 2.3 6.89 2.48 7.07 2.74L9.39 6.01C9.57 6.26 9.7 6.49 9.79 6.71C9.88 6.92 9.93 7.13 9.93 7.32C9.93 7.56 9.86 7.8 9.72 8.03C9.59 8.26 9.4 8.5 9.16 8.74L8.4 9.53C8.29 9.64 8.24 9.77 8.24 9.93C8.24 10.01 8.25 10.08 8.27 10.16C8.3 10.24 8.33 10.3 8.35 10.36C8.53 10.69 8.84 11.12 9.28 11.64C9.73 12.16 10.21 12.69 10.73 13.22C11.27 13.75 11.79 14.24 12.32 14.69C12.84 15.13 13.27 15.43 13.61 15.61C13.66 15.63 13.72 15.66 13.79 15.69C13.87 15.72 13.95 15.73 14.04 15.73C14.21 15.73 14.34 15.67 14.45 15.56L15.21 14.81C15.46 14.56 15.7 14.37 15.93 14.25C16.16 14.11 16.39 14.04 16.64 14.04C16.83 14.04 17.03 14.08 17.25 14.17C17.47 14.26 17.7 14.39 17.95 14.56L21.26 16.91C21.52 17.09 21.7 17.3 21.81 17.55C21.91 17.8 21.97 18.05 21.97 18.33Z" stroke="#8B89C2" stroke-width="1.5" stroke-miterlimit="10"/>
+                  <path d="M18.5 9C18.5 8.4 18.03 7.48 17.33 6.73C16.69 6.04 15.84 5.5 15 5.5" stroke="#8B89C2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M22 9C22 5.13 18.87 2 15 2" stroke="#8B89C2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>{{ section.settings.phone_number }}</span>
+              </a>
+            </li>
+          {% endif %}
+          {% if section.settings.email != blank %}
+            <li>
+              <a href="mailto:{{ section.settings.email }}" target="_blank">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path d="M21.8717 5H2.12823C1.50767 5 1 5.50767 1 6.12819V18.5384C1 19.1589 1.50767 19.6667 2.12823 19.6667H21.8718C22.4922 19.6667 23 19.159 23 18.5384V6.12819C23 5.50767 22.4923 5 21.8717 5ZM21.4484 5.8461L12.649 12.4462C12.4908 12.5666 12.2479 12.6419 11.9999 12.6408C11.752 12.6419 11.5092 12.5666 11.3509 12.4462L2.55156 5.8461H21.4484ZM16.748 12.8817L21.5429 18.8048C21.5477 18.8107 21.5536 18.8152 21.5587 18.8206H2.44126C2.44633 18.8149 2.45226 18.8107 2.45707 18.8048L7.25194 12.8817C7.2869 12.8385 7.31301 12.7888 7.32877 12.7355C7.34453 12.6822 7.34964 12.6263 7.3438 12.571C7.33796 12.5158 7.32128 12.4622 7.29473 12.4134C7.26817 12.3646 7.23226 12.3214 7.18903 12.2865C7.00741 12.1396 6.74113 12.1674 6.59418 12.3491L1.84614 18.2144V6.37495L10.8435 13.123C11.1817 13.3749 11.5932 13.4858 11.9999 13.4869C12.406 13.486 12.8178 13.3752 13.1563 13.123L22.1536 6.37495V18.2143L17.4057 12.3491C17.2588 12.1675 16.9923 12.1395 16.8109 12.2865C16.629 12.4334 16.601 12.7 16.748 12.8817Z" fill="#8B89C2" stroke="#8B89C2" stroke-width="0.5"/>
+                </svg>
+                <span>{{ section.settings.email }}</span>
+              </a>
+            </li>
+          {% endif %}
+          {% if section.settings.address != blank %}
+            <li>
+              <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/Adddress.png?v=1679575655" alt="Adddress" loading="lazy">
+              <span>{{ section.settings.address }}</span>
+            </li>
+          {% endif %}
+          {% if section.settings.support_time != blank %}
+            <li>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12Z" stroke="#8B89C2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M15.71 15.18L12.61 13.33C12.07 13.01 11.63 12.24 11.63 11.61V7.50999" stroke="#8B89C2" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>{{ section.settings.support_time }}</span>
+            </li>
+          {% endif %}
+        </ul>
+      {% endif %}
+    {%- endcapture -%}
+
+    {% if content != blank %}
+      <div class="section-stack__intro">
+        <div class="prose {% if text_position == 'center' %}text-center{% endif %}">
+          {{- content -}}
+        </div>
+      </div>
+    {% endif %}
+    
+    <div class="section-stack__main">
+      <div {% render 'surface', class: 'contact-form rounded', background: section.settings.contact_background, text_color: section.settings.contact_text_color, background_fallback: 'bg-secondary' %}>
+        {%- capture contact_form_id -%}contact-form-{{ section.id }}{%- endcapture -%}
+
+        {%- form 'contact', id: contact_form_id, class: 'form' -%}
+          <div class="fieldset">
+            {%- if form.posted_successfully? -%}
+              {%- capture content -%}{{- 'contact.form.success_message' | t -}}{%- endcapture -%}
+              {%- render 'banner', status: 'success', content: content -%}
+            {%- endif -%}
+
+            {%- if form.errors -%}
+              {%- capture content -%}{{ form.errors.translated_fields[form.errors.first] | capitalize }} {{ form.errors.messages[form.errors.first] }}{%- endcapture -%}
+              {%- render 'banner', content: content, status: 'error' -%}
+            {% else %}
+              {%- assign icon = 'error' -%}
+              <div class="banner banner--error justify-center" style="display: none;">
+                {%- render 'icon' with icon, width: icon_width, height: icon_width, class: 'offset-icon' -%}<p></p>
+              </div>
+            {%- endif -%}
+
+            <div class="input-row">
+              {%- capture label -%}{{ 'contact.form.name' | t }}{%- endcapture -%}
+              {%- render 'input', type: 'text', name: 'contact[name]', class:' cont_name', label: label, value: customer.name, autocomplete: 'name' -%}
+
+              {%- capture label -%}{{ 'contact.form.email' | t }}{%- endcapture -%}
+              {%- render 'input', type: 'email', name: 'contact[email]', class:' cont_email', label: label, value: customer.email, autocomplete: 'email' -%}
+            </div>
+
+            {%- for block in section.blocks -%}
+              {%- assign field_title = block.settings.title -%}
+
+              {%- if field_title == blank -%}
+                {%- capture field_title -%}Custom field {% increment custom_field %}{%- endcapture -%}
+              {%- endif -%}
+
+              {%- capture name -%}contact[{{ field_title | escape }}]{%- endcapture -%}
+
+              {%- if block.type == 'text' -%}
+                {%- if block.settings.use_long_text -%}
+                  {%- render 'input', name: name, label: block.settings.title, required: block.settings.required, multiline: 4, block: block -%}
+                {%- else -%}
+                  {%- render 'input', type: 'text', name: name, label: block.settings.title, required: block.settings.required, block: block -%}
+                {%- endif -%}
+              {%- elsif block.type == 'dropdown' and block.settings.values != blank -%}
+                {%- assign values = block.settings.values | split: ',' -%}
+
+                {%- capture options -%}
+                  <option value="" disabled selected></option>
+                  {%- for value in values -%}
+                    <option value="{{ value | strip | escape }}">{{ value | strip | escape }}</option>
+                  {%- endfor -%}
+                {%- endcapture -%}
+
+                {%- render 'select', options: options, name: name, label: block.settings.title, required: true, block: block -%}
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- capture label -%}{{ 'contact.form.message' | t }}{%- endcapture -%}
+            {%- render 'input', name: 'contact[body]', class:' cont_body', label: label, multiline: 4 -%}
+          </div>
+
+          <div class="{% if text_position == 'center' %}justify-self-center{% else%}justify-self-start{% endif %}">
+            {%- capture button_content -%}{{ 'contact.form.submit' | t }}{%- endcapture -%}
+            {%- render 'button', content: button_content, type: 'submit', style:'fill', secondary: true, cls:' contact_us_btn', size: 'xl' -%}
+          </div>
+        {%- endform -%}
+        {% if section.settings.handwriting_text != blank %}
+          <svg xmlns="http://www.w3.org/2000/svg" id="contact_arrrow" width="95" height="158" viewBox="0 0 95 158" fill="#8b89c2"><g clip-path="url(#clip0_1_15)"><path d="M94.3008 2.19981C63.5008 -7.40019 35.1008 16.2998 23.7008 43.2998C8.8008 78.4998 14.6008 117.8 6.6008 154.4C6.4008 155.3 7.8008 155.7 8.00079 154.8C15.4008 120.8 11.0008 84.9998 22.1008 51.6998C27.3008 36.0998 36.0008 21.6998 49.6008 12.0998C62.4008 2.99981 78.6008 -1.10019 93.9008 3.69981C94.8008 3.89981 95.2008 2.49982 94.3008 2.19981Z" fill="#8b89c2"></path><path d="M0.000798554 142.6C2.1008 147.4 4.2008 152.2 6.3008 156.9C6.5008 157.4 7.2008 157.3 7.5008 157.1C11.7008 153.2 15.7008 149.3 19.7008 145.4C20.4008 144.7 19.3008 143.7 18.6008 144.3C14.6008 148.2 10.5008 152.1 6.4008 156C6.8008 156.1 7.2008 156.1 7.6008 156.2C5.5008 151.4 3.4008 146.6 1.3008 141.9C0.900802 141 -0.299201 141.7 0.000798554 142.6Z" fill="#8b89c2"></path></g><defs><clipPath id="clip0_1_15"><rect width="94.8" height="157.3" fill="white" transform="translate(94.8008 157.3) rotate(-180)"></rect></clipPath></defs></svg>
+          <h6 class="animate writing-text sixth_show contact_arrow_text" style="color: #8b89c2;">{{ section.settings.handwriting_text }}</h6>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact",
+  "class": "shopify-section--contact",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Contact Us"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Do you have any question?"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text position",
+      "options": [
+        {
+          "value": "start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "end",
+          "label": "Right"
+        }
+      ],
+      "default": "start"
+    },
+    {
+      "type":"header",
+      "content":"Contact details"
+    },
+    {
+      "type":"text",
+      "id":"phone_number",
+      "label":"Contact number"
+    },
+    {
+      "type":"text",
+      "id":"email",
+      "label":"Email"
+    },
+    {
+      "type":"richtext",
+      "id":"address",
+      "label":"Address"
+    },
+    {
+      "type":"richtext",
+      "id":"support_time",
+      "label":"Support time"
+    },
+    {
+      "type":"header",
+      "content":"Contact form"
+    },
+    {
+      "type":"text",
+      "id":"handwriting_text",
+      "label":"Handwriting text"
+    },
+    {
+      "type": "header",
+      "content": "Section colors",
+      "info": "Gradient replaces solid colors when set."
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color"
+    },
+    {
+      "type": "color_background",
+      "id": "heading_gradient",
+      "label": "Heading gradient"
+    },
+    {
+      "type": "header",
+      "content": "Contact block colors",
+      "info": "Gradient replaces solid colors when set."
+    },
+    {
+      "type": "color",
+      "id": "contact_background",
+      "label": "Background"
+    },
+    {
+      "type": "color",
+      "id": "contact_text_color",
+      "label": "Text"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text field",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "default": "Custom field"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_long_text",
+          "label": "Use long text",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "Dropdown",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "default": "Custom field"
+        },
+        {
+          "type": "text",
+          "id": "values",
+          "label": "Values",
+          "info": "Separate each value by a comma.",
+          "default": "value 1, value 2, value 3"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form",
+      "settings": {}
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,763 @@
+{%- comment -%}
+------------------------------------------------------------------------------------------------------------------------
+NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing this theme as much as we did for
+  developing it. We have put a lot of work to make this theme as developer friendly as possible by offering you
+  hooks to integrate into critical parts of the theme. You will find the complete technical documentation (including
+  all events, dependencies...) in the "documentation.txt" file, located in the Assets folder.
+------------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+<!doctype html>
+
+<html class="no-js" lang="{{ request.locale.iso_code }}" dir="{% render 'direction' %}">
+  <head>
+  {% render 'gokwik' %}
+  <meta name="facebook-domain-verification" content="ok21wo4yaq0zgl8moe3ml7yacglfu6" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0, maximum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="{{ settings.header_background }}">
+
+    <title>{% if page_title == blank %}{{ shop.name }}{% else %}{{ page_title }}{% if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif %}{% endif %}</title>
+    
+    {% capture page_desc %}
+      {% unless page_description %}
+        {% if template contains 'collection' %}{% if collection.description != blank %}{{ collection.description }}{% else %}{{ shop.description | r_strip | l_strip }}{% endif %}{% endif %}
+        {% if template contains 'product' %}{% if product.description != blank %}{{ product.description }}{% else %}{{ shop.description | r_strip | l_strip }}{% endif %}{% endif %}
+      {% endunless %}
+    {% endcapture %}
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% else %}
+      <meta name="description" content="{{ page_desc | escape | strip }}">
+    {%- endif -%}
+
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon -%}
+      <link rel="shortcut icon" href="{{ settings.favicon | image_url: width: 96 }}">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180 }}">
+    {%- endif -%}
+
+    {%- comment -%}Few prefetch to increase performance on commonly used third-parties{%- endcomment -%}
+    <link rel="preconnect" href="https://cdn.shopify.com">
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    <link rel="dns-prefetch" href="https://productreviews.shopifycdn.com">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    {%- unless settings.heading_font.system? -%}
+      <link rel="preload" href="{{ settings.heading_font | font_url }}" as="font" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- unless settings.text_font.system? -%}
+      <link rel="preload" href="{{ settings.text_font | font_url }}" as="font" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- render 'social-meta-tags' -%}
+    {%- render 'microdata-schema' -%}
+    {%- render 'css-variables' -%}
+    {%- render 'js-variables' -%}
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+  
+    <script src="{{ 'kwikpass-core-functions.js' | asset_url }}" ></script>
+
+    {{ content_for_header }}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" media="All">
+    <link href="{{ 'theme.css' | asset_url }}" rel="stylesheet" type="text/css" media="all">
+
+    <!-- Google tag ads account (gtag.js)  -->
+    <script type="lazyload_js" data-src="https://www.googletagmanager.com/gtag/js?id=AW-11145937595"></script>
+    <script type="lazyload_js">
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'AW-11145937595');
+    </script>
+  
+    
+  <script type='application/ld+json'>
+{	
+"@context": "http://www.schema.org",
+"@type": "localbusiness",
+"name": "SEREKO",
+"telephone": "+8588860547",
+"url": "https://serekoshop.com/",
+"logo": "https://serekoshop.com/cdn/shop/files/logo.png?v=1673416129&width=2048",
+"image": "https://serekoshop.com/cdn/shop/files/Artboard_1_5.jpg?v=1688042973&width=1200",
+"pricerange": "Affordable",
+"description": "SEREKO Shop's premier brand for skincare excellence. We offer wide range of clinically tested products that contain natural magic of Acerola Cherry that reveals 50X more glow.",
+"address": {
+  "@type": "PostalAddress",
+"streetAddress": "Plot no. 22, Assotech Business Cresterra, Unit 308, Tower, 1, Sector 135",
+  "addressLocality": "Noida",
+  "addressRegion": "Uttar Pradesh",
+  "postalCode": "201304",
+  "addressCountry": "India"
+},
+"hasMap": "https://goo.gl/maps/tf6BN6PpDMGwSZWQ6", 
+"openingHours": "Mo, Tu, We, Th, Fr, sat - 9:30?am–7:30?pm, sun- closed",
+   "contactPoint": {
+   "@type": "PostalAddress",
+   "contactType": "Customer Service",
+   "telephone": "+8588860547"
+},
+ "aggregateRating" : {
+    "@type" : "AggregateRating",
+    "ratingValue" : "5",
+    "bestRating" : "5",
+    "worstRating" : "1",
+    "ratingCount" : "34"
+  },
+  "review" : {
+    "@type" : "Review",
+    "author" : {
+      "@type" : "Person",
+      "name" : "Kaushik Veer"
+    },
+    "datePublished" : "2023-08-16",
+    "reviewRating" : {
+      "@type" : "Rating",
+      "ratingValue" : "5",
+      "bestRating" : "5",
+      "worstRating" : "1"
+    },
+    "reviewBody" : "Good Products"
+  }
+ }
+	</script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" media="all">
+    <style>
+        #sy-whatshelp {
+            right: 25px;
+            bottom: 30px;
+            position: fixed;
+            z-index: 9999;
+        }
+
+        #sy-whatshelp a.sywh-open-services {
+            background-color: #8b89c2;
+            color: #fff;
+            line-height: 55px;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 45px;
+            width: 65px;
+            height: 65px;
+            text-align: center;
+            box-shadow: 2px 2px 8px -3px #000;
+            border-radius: 100%;
+            -webkit-border-radius: 100%;
+            -moz-border-radius: 100%;
+            -ms-border-radius: 100%;
+            display: inline-block;
+        }
+
+        #sy-whatshelp a.sywh-open-services i {
+            line-height: 65px;
+        }
+
+    </style>
+
+<!-- Meta Pixel Code -->
+    <script type="lazyload_js">
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '9505205456187073');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=9505205456187073&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+    
+  </head>
+
+  <body class="{% if template contains 'index' %}index-template{% elsif template contains 'product' %}product-page-template{% endif %}{% if template contains 'page' and page.handle == 'our-science' %} our-science-page{% endif %}{% if template contains 'blog' and template.suffix == 'glossary' %} glossary-page{% endif %}{% if template contains 'article' %} article-page{% endif %}{% if settings.show_page_transition %} page-transition{% endif %} {% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}">
+    <img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=589450383245310&ev=PageView&noscript=1" alt="" loading="lazy">
+    
+    {%- render 'shadow-dom-templates' -%}
+
+    <a href="#main" class="skip-to-content sr-only">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+    {%- if request.page_type != 'password' -%}
+      {%- section 'announcement-bar' -%}
+      {%- section 'header' -%}
+      {%- section 'newsletter-popup' -%}
+
+      {%- if settings.cart_type != 'page' and request.page_type != 'cart' -%}
+        {%- section 'cart-drawer' -%}
+      {%- endif -%}
+
+      {%- if settings.cart_type == 'popover' -%}
+        <cart-notification-drawer open-from="bottom" class="quick-buy-drawer drawer"></cart-notification-drawer>
+      {%- endif -%}
+
+      {%- if request.page_type != 'search' -%}
+        {%- section 'search-drawer' -%}
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if request.page_type == 'customers/account' or request.page_type == 'customers/order' or request.page_type == 'customers/addresses' -%}
+      {%- section 'account-banner' -%}
+    {%- endif -%}
+
+    <main role="main" id="main" class="anchor">
+      {{ content_for_layout }}
+
+      {% comment %}
+      {%- if request.page_type != 'password' -%}
+        {%- section 'static-text-with-icons' -%}
+      {%- endif -%}
+      {% endcomment %}
+    </main>
+
+   
+    {%- if request.page_type != 'password' -%} 
+      {%- section 'footer' -%}
+      {% comment %}
+      {% if settings.whatsapp_no != blank %}
+        <a href="https://api.whatsapp.com/send?phone={{ settings.whatsapp_no }}{% if settings.wp_message != blank %}&text={{ settings.wp_message | url_encode }}{% endif %}" target="_blank">
+          <button class="my_button"></button>
+        </a>
+      {% endif %}
+      {% endcomment %}
+    {%- endif -%}
+
+    <!-- Kwikpass script to add kwikpass button in the header - [Starts] -->
+<script>
+  // loader icon
+  const loader = `<svg
+		class="loader"
+		width="17"
+		height="16"
+		viewBox="0 0 17 16"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			d="M8.50004 1.33325V3.99992M8.50004 11.9999V14.6666M4.50004 7.99992H1.83337M15.1667 7.99992H12.5M13.219 12.7189L11.3334 10.8333M13.219 3.33321L11.3334 5.21883M3.78109 12.7189L5.66671 10.8333M3.78109 3.33321L5.66671 5.21883"
+            stroke="#111"
+			stroke-width="1.6"
+			stroke-linecap="round"
+			stroke-linejoin="round"
+		/>
+</svg>`
+  
+  function getCustomerId() {
+    {% if customer %}
+      return {{ customer.id | json }};
+    {% else %}
+      return null
+    {% endif %}
+  }
+
+  function getThemeId() {
+    {% if theme %}
+      return {{ theme.id | json }};
+    {% else %}
+      return null
+    {% endif %}
+  }
+
+  function updateCustomer() {
+    token = getValueFromCookiesOrLocalStorage(XGokwikCoreToken(window.merchantInfo.environment));
+    const isLoginTagUpdate = sessionStorage.getItem('isLoginTagUpdate');
+    const phoneNumber = getValueFromCookiesOrLocalStorage('notify_phone_number');
+    const customerId = getCustomerId();
+    if (token && isLoginTagUpdate !== 'true' && customerId !== null) {
+      const event = new CustomEvent('customer-tag', {detail: {
+          customerId
+        }});
+      window.dispatchEvent(event);
+    }
+    if (token && phoneNumber && customerId !== null) {
+      let customerPhone = {{ customer.phone | json }};
+      if (customerPhone !== null) {
+        customerPhone = customerPhone.startsWith('+91')
+          ? customerPhone.slice(3)
+          : customerPhone.phone;
+      }
+      const needsToUpdatePhone = localStorage.getItem('needsToUpdatePhone');
+      if (needsToUpdatePhone === 'true') {
+          const event = new CustomEvent('update-customer');
+          window.dispatchEvent(event);
+          localStorage.removeItem('needsToUpdatePhone');
+      }
+    }
+}
+  
+     // This script will change for every merchant
+   
+   /*removing existing profile(person) icon - person icon is not present in this store*/
+   const profileButtonElement = document.querySelector('a[href="/account"].tap-area')
+
+  /* hide Login button from hamburger */
+    const hamburgerLoginButtonElement = document.querySelector('a[href="/account"].panel-footer__account-link').closest('div');
+    if(hamburgerLoginButtonElement) hamburgerLoginButtonElement.style.display = "none"
+ 
+ // defining css and add it to style tag in head
+    function appendCss() {
+    let css = `
+        .loader {
+        display: none;
+    		animation: rotate 1.5s linear infinite;
+    	}
+    
+    	@keyframes rotate {
+    		100% {
+    			transform: rotate(360deg);
+    		}
+    	}
+    
+        #icon-close-kwikpass{
+            display: none;
+            border-radius: 8px;
+            border: 1px solid;
+            margin: 0;
+            padding: 2px;
+        }
+        
+        .kp-disabled-text-color{
+          cursor: not-allowed;
+        }
+
+        #icon-close-kwikpass-mobile{
+            display: none;
+            border-radius: 8px;
+            border: 1px solid;
+            margin: 0;
+            padding: 2px;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        #logout-button-desktop, #logout-button-mobile{
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #344054;
+            font-style: normal;
+            font-weight: 600;
+            line-height: 20px;
+            width: 100%;
+            border-radius: 8px;
+            padding: 8px 14px;;
+            border: 1px solid var(--gray-300, #d0d5dd);
+            background: var(--base-white, #fff);
+            box-shadow: 0px 1px 2px 0px rgba(16, 24, 40, 0.05);
+        }
+        #loggedin-icons, #loggedin-icons-mobile{
+          align-self: center;
+          display: none;
+        }
+        #kwikpass-drawer-desktop, #kwikpass-drawer-mobile {
+            padding: 16px;
+            display: none;
+            right: -100%;
+            width: 13rem;
+            position: absolute;
+            top: 150%;
+            box-shadow: 0px 0px 32px 0px rgba(16, 24, 40, 0.32);
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            z-index: 999;
+            background: #b6b8db;
+
+        }
+
+        #kwikpass-drawer-desktop > ul , #kwikpass-drawer-mobile > ul {
+            margin: 0px 0px 10px 0px;
+            padding: 0;
+            width: 100%;
+        }
+         #kwikpass-drawer-desktop >ul >a , #kwikpass-drawer-mobile > ul > a {
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 0;
+            color: inherit;
+        }
+
+         
+        #kwikpass-drawer-desktop >ul >a:hover , #kwikpass-drawer-mobile > ul > a:hover , #kwikpass-drawer-desktop >ul >a:focus , #kwikpass-drawer-mobile > ul > a:focus {
+        text-decoration: none;
+        }
+
+       #kwikpass-drawer-desktop >ul >a:focus , #kwikpass-drawer-mobile > ul > a:focus,  #kwikpass-drawer-desktop >ul >a:active , #kwikpass-drawer-mobile > ul > a:active {
+        text-decoration: none;
+        }
+
+        #kwikpass-drawer-desktop >ul >a:focus .loader , #kwikpass-drawer-mobile > ul > a:focus .loader {
+          display: block;
+        }
+
+        #kwikpass-drawer-desktop >ul >a:not(:focus) .loader , #kwikpass-drawer-mobile > ul > a:not(:focus) .loader {
+          display: none;
+        }
+                    
+        #kwikpass-drawer-desktop > ul > a > p , #kwikpass-drawer-mobile > ul > a > p {
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 142.857%;
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            margin: 10px 0 10px 0;
+            color: currentColor;
+        }
+        
+        
+        .header--icon, .header--icon--mobile{
+            cursor: pointer;
+            position: relative;
+            display: inline-flex;
+
+        }
+
+        .header--icon--mobile{
+           align-items: center;
+          }
+
+      @media screen and (min-width: 640px) {
+    
+            #kwikpass-drawer-desktop{
+            display: none;
+            left: 0;
+            right: 0;
+            transform: translateX(-50%);
+            border-radius: 0.5rem;
+            width: 15rem;
+            max-width: 28rem;
+            
+        }
+
+         #kwikpass-drawer-mobile{
+            display: none;
+        }
+        
+         #kwikpass-drawer-desktop > ul {
+            padding: 8px;
+        }        
+          .header--icon--mobile{
+            display: none;
+          }
+            .header--icon{
+            display: inline-flex;
+            position: relative;
+          }
+      }
+        `;
+
+    var style = document.createElement('style');
+    style.innerHTML = css;
+    document.getElementsByTagName('head')[0].appendChild(style);
+  }
+
+   // function call to append css to style tag
+   appendCss()
+   
+   // Get the header's background color 
+    const headerBackgroundColor =findBackgroundColor(document.querySelector("store-header"))
+    const headerbgColor = extractRGBValues(headerBackgroundColor);
+
+   // existing user icon to show in the header
+    // TODO : fetch user icon form backend
+    const userIcon = `<svg
+          width="22"
+          height="22"
+          viewBox="0 0 22 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+      >
+          <path
+          d="M1 21V19.5C1 17.29 2.79 15.5 5 15.5H13C15.21 15.5 17 17.29 17 19.5V21"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          />
+          <path
+          d="M8.84998 11.9199C11.3353 11.9199 13.35 9.9052 13.35 7.41992C13.35 4.93464 11.3353 2.91992 8.84998 2.91992C6.36469 2.91992 4.34998 4.93464 4.34998 7.41992C4.34998 9.9052 6.36469 11.9199 8.84998 11.9199Z"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          />
+          <path
+          d="M19.8855 11.8047C20.5863 11.0339 20.0394 9.7975 18.9976 9.7975H16.0286L17.889 2.791C18.2115 1.57631 16.6867 0.745902 15.8413 1.67584L16.4209 2.20279L15.8413 1.67584L6.27813 12.1953C5.57736 12.9661 6.12429 14.2025 7.16606 14.2025H10.135L8.27467 21.209C7.95214 22.4237 9.47701 23.2541 10.3224 22.3242L9.75271 21.8063L10.3224 22.3242L19.8855 11.8047Z"
+          fill="url(#paint0_linear_1777_502)"
+          />
+          <path
+          d="M19.8855 11.8047C20.5863 11.0339 20.0394 9.7975 18.9976 9.7975H16.0286L17.889 2.791C18.2115 1.57631 16.6867 0.745902 15.8413 1.67584L16.4209 2.20279L15.8413 1.67584L6.27813 12.1953C5.57736 12.9661 6.12429 14.2025 7.16606 14.2025H10.135L8.27467 21.209C7.95214 22.4237 9.47701 23.2541 10.3224 22.3242L9.75271 21.8063L10.3224 22.3242L19.8855 11.8047Z"
+          fill="#FEA200"
+          />
+          <path
+          d="M19.8855 11.8047C20.5863 11.0339 20.0394 9.7975 18.9976 9.7975H16.0286L17.889 2.791C18.2115 1.57631 16.6867 0.745902 15.8413 1.67584L16.4209 2.20279L15.8413 1.67584L6.27813 12.1953C5.57736 12.9661 6.12429 14.2025 7.16606 14.2025H10.135L8.27467 21.209C7.95214 22.4237 9.47701 23.2541 10.3224 22.3242L9.75271 21.8063L10.3224 22.3242L19.8855 11.8047Z"
+          stroke="#b6b8db"
+          stroke-width="1.6"
+          />
+          <defs>
+          <linearGradient
+              id="paint0_linear_1777_502"
+              x1="13.0818"
+              y1="7.59083"
+              x2="13.0818"
+              y2="18.6367"
+              gradientUnits="userSpaceOnUse"
+          >
+              <stop stop-color="#FFD100" />
+              <stop offset="1" stop-color="#FEA200" />
+          </linearGradient>
+          </defs>
+      </svg>`;
+
+   // kwikpass icon for desktop - if user is not logged in
+     const KwikpassNotLoggedIcon = `<div id="kp-login-button-header-logo" style="cursor: pointer;display: flex">${userIcon}</div>`
+   
+   // kwikpass icon for mobile - if user is not logged in 
+   const KwikpassNotLoggedIconMobile = `<div id="kp-login-button-header-logo-mobile" style="cursor: pointer; color: rgb(0,0,0); display: flex">${userIcon}</div>`
+
+   // dropdown for desktop (opens on clicking kwikpass icon if user logged in)
+const drawerhtmlDesktop = `<div id="kwikpass-drawer-desktop"  >
+        <ul>
+            <a href="/account" style=" display: flex">
+                <p>
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                        d="M4.6 2.20033L3.3 3.93366C3.04251 4.27697 2.91377 4.44863 2.91676 4.59232C2.91936 4.71736 2.97799 4.83462 3.07646 4.91172C3.18962 5.00032 3.40419 5.00032 3.83333 5.00032H16.1667C16.5958 5.00032 16.8104 5.00032 16.9235 4.91172C17.022 4.83462 17.0806 4.71736 17.0832 4.59232C17.0862 4.44863 16.9575 4.27697 16.7 3.93366L15.4 2.20033M4.6 2.20033C4.74667 2.00477 4.82 1.90699 4.91294 1.83647C4.99525 1.77401 5.08846 1.72741 5.18782 1.69903C5.3 1.66699 5.42222 1.66699 5.66667 1.66699H14.3333C14.5778 1.66699 14.7 1.66699 14.8122 1.69903C14.9115 1.72741 15.0047 1.77401 15.0871 1.83647C15.18 1.90699 15.2533 2.00477 15.4 2.20033M4.6 2.20033L3.03333 4.28921C2.83545 4.55306 2.73651 4.68498 2.66625 4.83026C2.6039 4.95917 2.55843 5.09559 2.53096 5.23612C2.5 5.3945 2.5 5.55941 2.5 5.88921L2.5 15.667C2.5 16.6004 2.5 17.0671 2.68166 17.4236C2.84144 17.7372 3.09641 17.9922 3.41002 18.152C3.76654 18.3337 4.23325 18.3337 5.16667 18.3337L14.8333 18.3337C15.7668 18.3337 16.2335 18.3337 16.59 18.152C16.9036 17.9922 17.1586 17.7372 17.3183 17.4236C17.5 17.0671 17.5 16.6004 17.5 15.667V5.88921C17.5 5.55941 17.5 5.3945 17.469 5.23613C17.4416 5.09559 17.3961 4.95918 17.3338 4.83026C17.2635 4.68498 17.1646 4.55306 16.9667 4.28921L15.4 2.20033M13.3333 8.33366C13.3333 9.21771 12.9821 10.0656 12.357 10.6907C11.7319 11.3158 10.8841 11.667 10 11.667C9.11594 11.667 8.2681 11.3158 7.64298 10.6907C7.01786 10.0656 6.66667 9.21771 6.66667 8.33366"
+                        stroke="currentColor"
+                        stroke-width="1.66667"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        />
+                    </svg>
+
+                    Order History
+                </p>
+
+                ${loader}
+            </a>
+        </ul>
+        <button id="logout-button-desktop">
+            Logout
+            <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                d="M15 6.66667L18.3334 10M18.3334 10L15 13.3333M18.3334 10H7.50002M12.5 3.50337C11.4377 2.86523 10.2044 2.5 8.88891 2.5C4.90019 2.5 1.66669 5.85786 1.66669 10C1.66669 14.1421 4.90019 17.5 8.88891 17.5C10.2044 17.5 11.4377 17.1348 12.5 16.4966"
+                stroke="currentColor"
+                stroke-width="1.66667"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                />
+            </svg>
+        </button>
+        </div>`;
+
+    // dropdown for desktop (opens on clicking kwikpass icon if user logged in)
+  const drawerhtmlMobile = `<div id="kwikpass-drawer-mobile" >
+        <ul>
+            <a href="/account" style="display: flex">
+                <p>
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                        d="M4.6 2.20033L3.3 3.93366C3.04251 4.27697 2.91377 4.44863 2.91676 4.59232C2.91936 4.71736 2.97799 4.83462 3.07646 4.91172C3.18962 5.00032 3.40419 5.00032 3.83333 5.00032H16.1667C16.5958 5.00032 16.8104 5.00032 16.9235 4.91172C17.022 4.83462 17.0806 4.71736 17.0832 4.59232C17.0862 4.44863 16.9575 4.27697 16.7 3.93366L15.4 2.20033M4.6 2.20033C4.74667 2.00477 4.82 1.90699 4.91294 1.83647C4.99525 1.77401 5.08846 1.72741 5.18782 1.69903C5.3 1.66699 5.42222 1.66699 5.66667 1.66699H14.3333C14.5778 1.66699 14.7 1.66699 14.8122 1.69903C14.9115 1.72741 15.0047 1.77401 15.0871 1.83647C15.18 1.90699 15.2533 2.00477 15.4 2.20033M4.6 2.20033L3.03333 4.28921C2.83545 4.55306 2.73651 4.68498 2.66625 4.83026C2.6039 4.95917 2.55843 5.09559 2.53096 5.23612C2.5 5.3945 2.5 5.55941 2.5 5.88921L2.5 15.667C2.5 16.6004 2.5 17.0671 2.68166 17.4236C2.84144 17.7372 3.09641 17.9922 3.41002 18.152C3.76654 18.3337 4.23325 18.3337 5.16667 18.3337L14.8333 18.3337C15.7668 18.3337 16.2335 18.3337 16.59 18.152C16.9036 17.9922 17.1586 17.7372 17.3183 17.4236C17.5 17.0671 17.5 16.6004 17.5 15.667V5.88921C17.5 5.55941 17.5 5.3945 17.469 5.23613C17.4416 5.09559 17.3961 4.95918 17.3338 4.83026C17.2635 4.68498 17.1646 4.55306 16.9667 4.28921L15.4 2.20033M13.3333 8.33366C13.3333 9.21771 12.9821 10.0656 12.357 10.6907C11.7319 11.3158 10.8841 11.667 10 11.667C9.11594 11.667 8.2681 11.3158 7.64298 10.6907C7.01786 10.0656 6.66667 9.21771 6.66667 8.33366"
+                        stroke="currentColor"
+                        stroke-width="1.66667"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        />
+                    </svg>
+
+                    Order History
+                </p>
+
+               ${loader}
+            </a>
+        </ul>
+        <button id="logout-button-mobile">
+            Logout
+            <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                d="M15 6.66667L18.3334 10M18.3334 10L15 13.3333M18.3334 10H7.50002M12.5 3.50337C11.4377 2.86523 10.2044 2.5 8.88891 2.5C4.90019 2.5 1.66669 5.85786 1.66669 10C1.66669 14.1421 4.90019 17.5 8.88891 17.5C10.2044 17.5 11.4377 17.1348 12.5 16.4966"
+                stroke="currentColor"
+                stroke-width="1.66667"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                />
+            </svg>
+        </button>
+        </div>`; 
+  const kwikpassLoggedInIcon = `
+  <div id="loggedin-icons" >
+        <div id="icon-close-kwikpass" class="icon-close-kwikpass" style="height: 25px; cursor: pointer; color: rgb(0,0,0)" onclick="handleDrawer1()">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+          </div>
+          <div style="cursor: pointer;display: flex;color: rgb(0,0,0);" onclick="handleDrawer1()" id="icon-kwikpass">
+              ${userIcon}
+          </div>
+    </div>`;
+
+  const kwikpassLoggedInIconMobile = `
+  <div id="loggedin-icons-mobile" >
+        <div id="icon-close-kwikpass-mobile" style="cursor: pointer; color: rgb(0,0,0);" onclick="handleDrawer1()">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+          </div> 
+        <div style="cursor: pointer;color: rgb(0,0,0);display: flex" onclick="handleDrawer1()" id="icon-kwikpass-mobile">
+              ${userIcon}
+        </div>
+  </div>`;
+  
+  // It will change based on theme
+  if(getDeviceWidth() >= 767){
+    const personIconElement = document.querySelector('a[href="/cart"].tap-area')?.parentElement
+    const html = `
+         ${KwikpassNotLoggedIcon}
+         ${kwikpassLoggedInIcon}        
+         ${drawerhtmlDesktop}
+        `;
+    
+    if(!document.getElementsByClassName("header--icon")?.[0]){
+      const kwipassDesktopNode = document.createElement('div')
+      kwipassDesktopNode.className="header--icon"
+      kwipassDesktopNode.innerHTML = html
+      personIconElement.replaceChild(kwipassDesktopNode,profileButtonElement)
+    } 
+  }
+  else{
+       //mobile
+    const heading = document.querySelector('a[href="/cart"].tap-area')?.parentElement
+    const htmlmobile = `
+       ${KwikpassNotLoggedIconMobile}
+       ${kwikpassLoggedInIconMobile}        
+       ${drawerhtmlMobile}
+        `;
+    
+    if(!document.getElementsByClassName("header--icon--mobile")?.[0]){
+      const kwipassDesktopNode = document.createElement('div')
+      kwipassDesktopNode.className="header--icon--mobile"
+      kwipassDesktopNode.innerHTML = htmlmobile
+      heading.replaceChild(kwipassDesktopNode,profileButtonElement)
+    } 
+    }
+</script>
+<!-- Kwikpass script to add kwikpass button in the header - [Ends] -->
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js" async></script>
+    <script type="module" src="{{ 'vendor.min.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'theme.js' | asset_url }}"></script>
+    <script src="{{ 'writing-text.js' | asset_url }}" async></script>
+    <script type="module" src="{{ 'sections.js' | asset_url }}"></script>
+
+
+      <script>
+var acc = document.getElementsByClassName("accordionproductfaq");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    } 
+  });
+}
+</script>
+
+      <script>
+    document.getElementById("contact_form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById("Email").value;
+      const date = document.getElementById("ExpectedDeliveryDate").value;
+      const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      const datePattern = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
+
+      const emailError = document.getElementById("email-error");
+      const dateError = document.getElementById("date-error");
+      const formMessages = document.getElementById("form-messages");
+
+      emailError.textContent = "";
+      dateError.textContent = "";
+
+      if (!email.match(emailPattern)) {
+        emailError.textContent = "Invalid email format";
+        return;
+      }
+
+      if (!date.match(datePattern)) {
+        dateError.textContent = "Invalid date format (dd/mm/yyyy)";
+        return;
+      }
+
+      // Simulate form submission success
+      formMessages.textContent = "Form submitted successfully!";
+      formMessages.classList.remove("error");
+      formMessages.classList.add("success");
+      
+      // Optionally, you can use JavaScript to submit the form to your server here.
+
+    });
+  </script>
+
+      
+   <!-- REELKART SNIPPET -->
+<!-- <script src="https://js.reelkart.io/sdk.js?domain=serekoshop.com"></script> -->
+          <script src="https://reelkart.blob.core.windows.net/reelkart/sdk/v3/reelkart-sdk.js?domain=serekoshop.com"></script>
+
+<!-- REELKART SNIPPET --> 
+
+    <div id="sy-whatshelp">
+        <a href="https://api.whatsapp.com/send?phone=917669006807&text=Hi" target="_blank" class="sywh-open-services " aria-label="WhatsApp Help" data-html="true" data-placement="left">
+          <i class="fab fa-whatsapp"></i>
+         </a>        
+      </div>
+  {% include 'kwikpass' %}
+
+  </body>
+</html>

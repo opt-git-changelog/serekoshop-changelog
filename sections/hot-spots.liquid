@@ -1,0 +1,507 @@
+{%- render 'section-spacing-collapsing', block_margin_collapsing: true -%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    {%- if section.settings.full_width -%}
+      --section-spacing-block: 0;
+    {%- endif -%}
+
+    --content-over-media-content-max-width: 465px;
+    --content-over-media-overlay: {{ section.settings.overlay_color.rgb }} / {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+
+    --hot-spot-background: {{ section.settings.hot_spot_dot_background.rgb }};
+    --hot-spot-text-color: {{ section.settings.hot_spot_dot_text_color.rgb }};
+    --hot-spot-content-opacity: {{ section.settings.hot_spot_content_opacity | divided_by: 100.0 }};
+    --hot-spot-content-blur-radius: {{ section.settings.hot_spot_content_blur_radius }}px;
+    --hot-spot-content-background: {{ section.settings.hot_spot_content_background.rgb }};
+    --hot-spot-content-text-color: {{ section.settings.hot_spot_content_text_color.rgb }};
+  }
+
+  #shopify-section-{{ section.id }} .content-over-media {
+    overflow: visible; /* allows dot to show outside */
+  }
+
+  {%- if section.settings.full_width -%}
+    @media screen and (min-width: 1000px) {
+      #shopify-section-{{ section.id }} {
+        --section-spacing-block: 0;
+      }
+    }
+  {%- endif -%}
+  .shopify-section--hot-spots .section.section-full {
+      background-color: {{ section.settings.image_background }};
+  }
+
+  {%- for block in section.blocks -%}
+    #block-{{ section.id }}-{{ block.id }} {
+      --hot-spot-horizontal-position: {% if section.settings.mobile_image != blank %}{{ block.settings.horizontal_position_mobile }}{% else %}{{ block.settings.horizontal_position }}{% endif %}%;
+      --hot-spot-vertical-position: {% if section.settings.mobile_image != blank %}{{ block.settings.vertical_position_mobile }}{% else %}{{ block.settings.vertical_position }}{% endif %}%;
+    }
+
+    @media screen and (min-width: 1000px) {
+      #block-{{ section.id }}-{{ block.id }} {
+        --hot-spot-horizontal-position: {{ block.settings.horizontal_position }}%;
+        --hot-spot-vertical-position: {{ block.settings.vertical_position }}%;
+      }
+    }
+  {%- endfor -%}
+</style>
+
+<div {% render 'section-properties' %}>
+  <div class="section-stack">
+    {% comment %}
+    {%- if section.settings.title != blank or section.settings.content != blank -%}
+      <div class="section-header">
+        <div class="prose">
+          {%- if section.settings.title != blank -%}
+            <h2 class="h2">{{ section.settings.title | escape }}</h2>
+          {%- endif -%}
+
+          {{- section.settings.content -}}
+
+          {%- if section.settings.button_text != blank -%}
+            {%- render 'button', size: 'lg', content: section.settings.button_text, href: section.settings.button_url -%}
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+    {% endcomment %}
+
+    {%- if section.settings.title != blank or section.settings.content != blank -%}
+    <div class="hotspot-box hotspot-mobile">      
+        <div class="{{ section.settings.desktop_text_position }} hotspot_desc">
+          <div class="prose">
+            {%- if section.settings.subheading != blank -%}
+              <span>{{ section.settings.subheading | escape }}</span>
+            {%- endif -%}
+            {%- if section.settings.title != blank -%}
+              <h2 class="h2">{{ section.settings.title | escape }}</h2>
+            {%- endif -%}
+
+            {{- section.settings.content -}}
+
+            {%- if section.settings.button_text != blank -%}
+              {%- render 'button', size: 'lg', content: section.settings.button_text, href: section.settings.button_url -%}
+            {%- endif -%}
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" id="half_rightsquare_arrow" width="58" height="306" viewBox="0 0 58 306" fill="none"><g clip-path="url(#clip0_1_137)"><path d="M-2.42009e-06 1.49124L56.6937 1.49124L56.6937 304.509L6.27025 304.509" stroke="#8B88C1" stroke-miterlimit="10"/></g><defs><clipPath id="clip0_1_137"><rect width="58" height="306" fill="white" transform="translate(58 306) rotate(-180)"/></clipPath></defs></svg>
+        </div>  
+    </div>
+    {%- endif -%}
+
+    {%- capture surface_class -%}content-over-media {% if section.settings.full_width %}full-bleed{% else %}{% endif %}{%- endcapture -%}
+
+    <div {% render 'surface', class: surface_class, background_gradient: section.settings.image_background_gradient, background: section.settings.image_background, text_color: section.settings.overlay_text_color %}>
+        {%- if section.settings.image != blank -%}
+          {%- assign mobile_image = section.settings.mobile_image | default: section.settings.image -%}
+  
+          {{- section.settings.image | image_url: width: section.settings.image.width | image_tag: class: 'visible-lg', loading: 'lazy', sizes: '100vw', widths: '300,400,500,600,800,1000,1200,1400,1600,1800,2000,2200,2400,2600,2800,3000' -}}
+          {{- mobile_image | image_url: width: mobile_image.width | image_tag: class: 'visible-xs', loading: 'lazy', sizes: '100vw', widths: '300,400,500,600,800,1000,1200,1400,1600,1800,2000,2200,2400,2600,2800,3000' -}}
+        {%- else -%}
+          {{- 'lifestyle-2' | placeholder_svg_tag: 'placeholder' | replace: '<svg', '<svg preserveAspectRatio="xMinYMin slice"' -}}
+        {%- endif -%}
+      <div class="hotspot-box">
+        {%- if section.settings.title != blank or section.settings.content != blank -%}
+          <div class="{{ section.settings.desktop_text_position }} hotspot_desc">
+            <div class="prose">
+              {%- if section.settings.subheading != blank -%}
+                <span>{{ section.settings.subheading | escape }}</span>
+              {%- endif -%}
+              {%- if section.settings.title != blank -%}
+                <h2 class="h2">{{ section.settings.title | escape }}</h2>
+              {%- endif -%}
+  
+              {{- section.settings.content -}}
+  
+              {%- if section.settings.button_text != blank -%}
+                {%- render 'button', size: 'lg', content: section.settings.button_text, href: section.settings.button_url -%}
+              {%- endif -%}
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" id="half_rightsquare_arrow" width="58" height="306" viewBox="0 0 58 306" fill="none"><g clip-path="url(#clip0_1_137)"><path d="M-2.42009e-06 1.49124L56.6937 1.49124L56.6937 304.509L6.27025 304.509" stroke="#8B88C1" stroke-miterlimit="10"/></g><defs><clipPath id="clip0_1_137"><rect width="58" height="306" fill="white" transform="translate(58 306) rotate(-180)"/></clipPath></defs></svg>
+          </div>
+        {%- endif -%}
+        <div class="hotspot_wrap">
+          {% capture images %}
+            {% if section.blocks.size > 0 %}
+              {%- for block in section.blocks -%}
+                {%- if block.settings.title == blank and block.settings.content == blank -%}
+                  {%- continue -%}
+                {%- endif -%}
+                {% if block.settings.image != blank %}
+                  {{- block.settings.image | image_url: width: block.settings.image.width | image_tag: loading: 'lazy', title:block.settings.title, alt:block.settings.title -}}
+                {% else %}
+                  {{ 'product-1' | placeholder_svg_tag }}
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          {% endcapture %}
+
+          {% if images != blank %}
+            {% comment %}<div class="hotspot_pro_img">{{ images }}</div>{% endcomment %}
+          {% endif %}
+
+          {% comment %}
+          <div class="hotspot_pro_img">
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/pro_1.png?v=1673861073" alt="hotspot product" />
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/pro_2.png?v=1673861072" alt="hotspot product" />
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/pro_3.png?v=1673861072" alt="hotspot product" />
+          </div>
+          {% endcomment %}
+          
+          <div class="hotspot_pro_dots">
+            {%- for block in section.blocks -%}
+              {%- if block.settings.title == blank and block.settings.content == blank -%}
+                {%- continue -%}
+              {%- endif -%}
+      
+              <div id="block-{{ section.id }}-{{ block.id }}" class="hot-spot">
+                {%- capture popover_id -%}popover-{{ block.id }}{%- endcapture -%}
+      
+                <button type="button" aria-controls="{{ popover_id }}" aria-expanded="false" class="hot-spot__dot tap-area">
+                  <span class="sr-only">{{ 'general.accessibility.read_more' | t }}</span>
+                  {%- render 'icon' with 'plus', width: 8, height: 8 -%}
+                </button>
+      
+                {%- if block.settings.horizontal_position < 50 -%}
+                  {%- assign anchor_horizontal = 'start' -%}
+                {%- else -%}
+                  {%- assign anchor_horizontal = 'end' -%}
+                {%- endif -%}
+      
+                <x-popover id="{{ popover_id }}" class="hot-spot-popover popover" anchor-vertical="center" anchor-horizontal="{{ anchor_horizontal }}" {{ block.shopify_attributes }}>
+                  <div class="prose">
+                    {%- if block.settings.icon != blank -%}
+                      {%- capture sizes -%}{{ block.settings.icon_width }}px{%- endcapture -%}
+                      {%- capture widths -%}{{ block.settings.icon_width }}, {{ block.settings.icon_width | times: 2 | at_most: block.settings.icon.width }}{%- endcapture -%}
+                      {%- capture style -%}width: {{ block.settings.icon_width }}px{%- endcapture -%}
+                      {{- block.settings.icon | image_url: width: block.settings.icon.width | image_tag: loading: 'lazy', sizes: sizes, widths: widths, style: style -}}
+                    {%- endif -%}
+      
+                    {%- if block.settings.title != blank -%}
+                      <p class="h6">{{ block.settings.title | escape }}</p>
+                    {%- endif -%}
+      
+                    {{- block.settings.content -}}
+                  </div>
+                </x-popover>
+              </div>
+            {%- endfor -%}
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" id="indicator_arrow" width="110" height="174" viewBox="0 0 110 174" fill="none"><g clip-path="url(#clip0_1_131)"><path d="M12.5 163.978V24.4994C12.5 24.4994 63.3333 -29.5102 108.611 27.5618" stroke="#8B88C1" stroke-miterlimit="10"/><path d="M12.5 162.864C9.72222 160.08 3.88889 158.688 0 158.41C5.27778 162.307 10 167.597 12.5 173.722C15 167.318 20 162.586 25 158.41C21.1111 158.966 15.8333 159.802 12.5 162.864Z" fill="#8B88C1"/></g><defs><clipPath id="clip0_1_131"><rect width="110" height="174" fill="white"/></clipPath></defs></svg>
+        </div>
+      </div>
+    </div>
+    {% if section.settings.logo_image != blank %}
+      <img src="{{ section.settings.logo_image | img_url:'229x' }}" id="neuro_calm_badge" alt="Neuro Calm">
+    {% endif %}
+    <svg xmlns="http://www.w3.org/2000/svg" id="curls_arrow" width="189" height="6" viewBox="0 0 189 6" fill="none"><g clip-path="url(#clip0_1_125)"><path d="M182.431 6C180.41 6 179.652 4.56 178.641 3.36C177.883 2.16 177.125 1.2 176.114 1.2C174.851 1.2 174.346 2.16 173.588 3.36C172.83 4.56 171.819 6 169.798 6C167.777 6 167.019 4.56 166.008 3.36C165.25 2.16 164.492 1.2 163.481 1.2C162.471 1.2 161.713 2.16 160.955 3.36C160.197 4.56 159.186 6 157.165 6C155.144 6 154.386 4.56 153.375 3.36C152.617 2.16 151.859 1.2 150.848 1.2C149.838 1.2 149.08 2.16 148.322 3.36C147.564 4.56 146.553 6 144.532 6C142.511 6 141.753 4.56 140.742 3.36C139.984 2.16 139.226 1.2 138.215 1.2C137.205 1.2 136.447 2.16 135.689 3.36C134.931 4.56 133.92 6 131.899 6C129.878 6 129.12 4.56 128.109 3.36C127.351 2.16 126.593 1.2 125.582 1.2C124.572 1.2 123.814 2.16 123.056 3.36C122.298 4.56 121.287 6 119.266 6C117.245 6 116.487 4.56 115.476 3.36C114.718 2.16 113.96 1.2 112.949 1.2C111.939 1.2 111.181 2.16 110.423 3.36C109.665 4.56 108.654 6 106.633 6C104.612 6 103.854 4.56 102.843 3.36C102.085 2.16 101.327 1.2 100.316 1.2C99.0532 1.2 98.5479 2.16 97.7899 3.36C97.0319 4.56 96.0213 6 94 6C91.9787 6 91.2207 4.56 90.2101 3.36C89.4521 2.16 88.6941 1.2 87.6835 1.2C86.4202 1.2 85.9149 2.16 85.1569 3.36C84.3989 4.56 83.3883 6 81.367 6C79.3457 6 78.5878 4.56 77.5771 3.36C76.8192 2.16 76.0612 1.2 75.0505 1.2C74.0399 1.2 73.2819 2.16 72.5239 3.36C71.766 4.56 70.7553 6 68.734 6C66.7128 6 65.9548 4.56 64.9442 3.36C64.1862 2.16 63.4282 1.2 62.4176 1.2C61.4069 1.2 60.6489 2.16 59.891 3.36C59.133 4.56 58.1223 6 56.1011 6C54.0798 6 53.3218 4.56 52.3112 3.36C51.5532 2.16 50.7952 1.2 49.7846 1.2C48.5213 1.2 48.016 2.16 47.258 3.36C46.5 4.56 45.4894 6 43.4681 6C41.4468 6 40.6888 4.56 39.6782 3.36C38.9202 2.16 38.1622 1.2 37.1516 1.2C36.141 1.2 35.383 2.16 34.625 3.36C33.867 4.56 32.8564 6 30.8351 6C28.8138 6 28.0559 4.56 27.0452 3.36C26.2872 2.16 25.5293 1.2 24.5186 1.2C23.508 1.2 22.4973 2.16 21.7394 3.36C20.7287 4.56 19.9707 6 17.9495 6C15.9282 6 15.1702 4.56 14.1596 3.36C13.6543 2.16 12.8963 1.2 11.633 1.2C10.3697 1.2 9.86436 2.16 9.10638 3.36C8.09575 4.56 7.33777 6 5.31649 6C3.29521 6 2.53723 4.56 1.5266 3.36C0.768617 2.16 0.263298 1.2 -1 1.2V0C1.02128 0 1.77926 1.44 2.78989 2.64C3.54787 3.84 4.05319 4.8 5.31649 4.8C6.57979 4.8 7.08511 3.84 7.84309 2.64C8.85372 1.44 9.6117 0 11.633 0C13.6543 0 14.4122 1.44 15.4229 2.64C16.1809 3.84 16.6862 4.8 17.9495 4.8C19.2128 4.8 19.7181 3.84 20.4761 2.64C21.4867 1.44 22.4973 0 24.266 0C26.0346 0 27.0452 1.44 28.0559 2.64C28.8138 3.84 29.3191 4.8 30.5824 4.8C31.8457 4.8 32.3511 3.84 33.109 2.64C34.1197 1.44 35.1303 0 36.8989 0C38.6676 0 39.6782 1.44 40.6888 2.64C41.4468 3.84 41.9521 4.8 43.2154 4.8C44.4787 4.8 44.984 3.84 45.742 2.64C46.7527 1.44 47.7633 0 49.5319 0C51.5532 0 52.3112 1.44 53.3218 2.64C54.0798 3.84 54.5851 4.8 55.8484 4.8C57.1117 4.8 57.617 3.84 58.375 2.64C59.3856 1.44 60.3963 0 62.1649 0C63.9335 0 64.9442 1.44 65.9548 2.64C66.7128 3.84 67.2181 4.8 68.4814 4.8C69.7447 4.8 70.25 3.84 71.008 2.64C72.0186 1.44 73.0293 0 74.7979 0C76.5665 0 77.5771 1.44 78.5878 2.64C79.3457 3.84 79.8511 4.8 81.1144 4.8C82.3777 4.8 82.883 3.84 83.641 2.64C84.6516 1.44 85.6622 0 87.4309 0C89.1995 0 90.2101 1.44 91.2207 2.64C91.9787 3.84 92.7367 4.8 93.7473 4.8C95.0106 4.8 95.516 3.84 96.2739 2.64C97.2846 1.44 98.2952 0 100.064 0C102.085 0 102.843 1.44 103.854 2.64C104.612 3.84 105.37 4.8 106.38 4.8C107.391 4.8 108.149 3.84 108.907 2.64C109.918 1.44 110.928 0 112.949 0C114.971 0 115.729 1.44 116.739 2.64C117.497 3.84 118.255 4.8 119.266 4.8C120.529 4.8 121.035 3.84 121.793 2.64C122.551 1.44 123.561 0 125.582 0C127.604 0 128.362 1.44 129.372 2.64C130.13 3.84 130.888 4.8 131.899 4.8C132.91 4.8 133.668 3.84 134.426 2.64C135.184 1.44 136.194 0 138.215 0C140.237 0 140.995 1.44 142.005 2.64C142.763 3.84 143.521 4.8 144.532 4.8C145.795 4.8 146.301 3.84 147.059 2.64C148.069 1.44 148.827 0 150.848 0C152.87 0 153.628 1.44 154.638 2.64C155.396 3.84 156.154 4.8 157.165 4.8C158.428 4.8 158.934 3.84 159.691 2.64C160.702 1.44 161.46 0 163.481 0C165.503 0 166.261 1.44 167.271 2.64C168.029 3.84 168.787 4.8 169.798 4.8C171.061 4.8 171.566 3.84 172.324 2.64C173.335 1.44 174.346 0 176.114 0C177.883 0 178.894 1.44 179.904 2.64C180.662 3.84 181.42 4.8 182.431 4.8C183.441 4.8 184.199 3.84 184.957 2.64C185.968 1.44 186.979 0 189 0V1.2C187.737 1.2 187.231 2.16 186.473 3.36C185.463 4.56 184.452 6 182.431 6Z" fill="#8B89C2"/></g><defs><clipPath id="clip0_1_125"><rect width="190" height="6" fill="white" transform="translate(-1)"/></clipPath></defs></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" id="half_circle_arrow" width="118" height="270" viewBox="0 0 118 270" fill="none"><path d="M63.1214 125.433C100.806 142.677 117.293 187.323 99.8639 225.118C82.4348 262.913 38.1553 279.449 0.470703 261.969" stroke="#8B88C1" stroke-miterlimit="10"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" id="half_leftsquare_arrow" width="68" height="190" viewBox="0 0 68 190" fill="none"><path d="M68 188.47H1.53156V1.52979H60.6487" stroke="#8B88C1" stroke-miterlimit="10"/></svg>    
+    <svg xmlns="http://www.w3.org/2000/svg" id="triangle_arrow" width="213" height="292" viewBox="0 0 213 292" fill="none"><path d="M282.258 291.362L1.21289 178.545L282.258 0.765625" stroke="#8B89C2" stroke-miterlimit="10"/></svg>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Hot spots",
+  "class": "shopify-section--hot-spots",
+  "tag": "section",
+  "max_blocks": 3,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "full_width",
+      "label": "Full width",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile image"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo_image",
+      "label": "Logo image"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text"
+    },
+    {
+      "type": "url",
+      "id": "button_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "select",
+      "id": "desktop_text_position",
+      "label": "Desktop content position",
+      "info": "To avoid overlap, choose a position far from any hot spot.",
+      "options": [
+        {
+          "value": "place-self-start text-start",
+          "label": "Top left"
+        },
+        {
+          "value": "place-self-start-center text-center",
+          "label": "Top center"
+        },
+        {
+          "value": "place-self-start-end text-end",
+          "label": "Top right"
+        },
+        {
+          "value": "place-self-center-start text-start",
+          "label": "Middle left"
+        },
+        {
+          "value": "place-self-center text-center",
+          "label": "Middle center"
+        },
+        {
+          "value": "place-self-center-end text-end",
+          "label": "Middle right"
+        },
+        {
+          "value": "place-self-end-start text-start",
+          "label": "Bottom left"
+        },
+        {
+          "value": "place-self-end-center text-center",
+          "label": "Bottom center"
+        },
+        {
+          "value": "place-self-end text-end",
+          "label": "Bottom right"
+        }
+      ],
+      "default": "place-self-start text-start"
+    },
+    {
+      "type": "header",
+      "content": "Image",
+      "info": "Background is only visible for transparent images, such as PNG."
+    },
+    {
+      "type": "color",
+      "id": "image_background",
+      "label": "Background"
+    },
+    {
+      "type": "color_background",
+      "id": "image_background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Overlay",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Overlaid text"
+    },
+    {
+      "type": "color",
+      "id": "overlay_text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Hot spot dot"
+    },
+    {
+      "type": "color",
+      "id": "hot_spot_dot_background",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "hot_spot_dot_text_color",
+      "label": "Icon color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Hot spot content",
+      "info": "Only applies on desktop."
+    },
+    {
+      "type": "color",
+      "id": "hot_spot_content_background",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "hot_spot_content_text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "hot_spot_content_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "label": "Opacity",
+      "default": 90
+    },
+    {
+      "type": "range",
+      "id": "hot_spot_content_blur_radius",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "label": "Blur radius",
+      "default": 3
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Hot spot",
+      "settings": [
+        {
+          "type": "range",
+          "id": "horizontal_position",
+          "min": 5,
+          "max": 95,
+          "step": 1,
+          "unit": "%",
+          "label": "Horizontal position",
+          "default": 30
+        },
+        {
+          "type": "range",
+          "id": "vertical_position",
+          "min": 5,
+          "max": 95,
+          "step": 1,
+          "unit": "%",
+          "label": "Vertical position",
+          "default": 30
+        },
+        {
+          "type": "range",
+          "id": "horizontal_position_mobile",
+          "min": 5,
+          "max": 95,
+          "step": 1,
+          "unit": "%",
+          "label": "Horizontal position (mobile image)",
+          "default": 30
+        },
+        {
+          "type": "range",
+          "id": "vertical_position_mobile",
+          "min": 5,
+          "max": 95,
+          "step": 1,
+          "unit": "%",
+          "label": "Vertical position (mobile image)",
+          "default": 30
+        },
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "range",
+          "id": "icon_width",
+          "min": 20,
+          "max": 100,
+          "step": 4,
+          "unit": "px",
+          "label": "Icon width",
+          "default": 32
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Feature name"
+        },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "Content",
+          "default": "<p>Share useful information about your product features.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hot spots",
+      "blocks": [
+        {
+          "type": "item",
+          "settings": {
+            "horizontal_position": 24,
+            "vertical_position": 70,
+            "horizontal_position_mobile": 24,
+            "vertical_position_mobile": 70
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "horizontal_position": 62,
+            "vertical_position": 14,
+            "horizontal_position_mobile": 62,
+            "vertical_position_mobile": 14
+          }
+        },
+        {
+          "type": "item",
+          "settings": {
+            "horizontal_position": 83,
+            "vertical_position": 75,
+            "horizontal_position_mobile": 83,
+            "vertical_position_mobile": 75
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

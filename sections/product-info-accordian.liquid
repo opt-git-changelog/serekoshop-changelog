@@ -1,0 +1,116 @@
+{% assign pro_meta = product.metafields.product %}
+{% if pro_meta.product_info_column_1 != blank or pro_meta.product_info_column_2 != blank %}
+  {%- assign background = section.settings.background -%}
+  {%- assign background_gradient = section.settings.background_gradient -%}
+  
+  {%- if background_gradient != blank -%}
+    {%- capture class -%}{{ class }} bg-gradient{%- endcapture -%}
+    {%- assign gradient_first_stop = background_gradient | split: 'rgba(' | last | split: ')' | first | remove: ',' | split: ' ' -%}
+    {%- capture style_attributes -%}{{ style_attributes }} --gradient: {{ background_gradient }}; --background: {{ gradient_first_stop[0] }} {{ gradient_first_stop[1] }} {{ gradient_first_stop[2] }};{%- endcapture -%}
+  {%- else -%}
+    {%- capture class -%}{{ class }} bg-custom{%- endcapture -%}
+    {%- capture style_attributes -%}{{ style_attributes }} --background: {{ background.rgb }};{%- endcapture -%}
+  {%- endif -%}
+  
+  <div class="product-info-accordion {{ class | strip }}" style="{{ style_attributes | strip }}">
+    <div class="stack_info_accordian">
+      {% if pro_meta.product_info_column_1 != blank %}
+        {{ pro_meta.product_info_column_1 }}
+      {% endif %}
+      {% if pro_meta.product_info_column_2 != blank %}
+        <div class="stack_accordian">
+          {{ pro_meta.product_info_column_2 }}
+        </div>
+      {% endif %}
+    </div>
+    {% if section.settings.small_content != blank %}
+      <h6 class="animate sixth_show" style="color:#8b89c2">{{ section.settings.small_content | replace:'<p>', '' | replace:'</p>', '' }}</h6>
+    {% endif %}
+  </div>
+
+  <style>
+    .stack_des .h2 {
+      color: {{ section.settings.heading_color }}
+    }
+    .stack_des p {
+      color: {{ section.settings.text_color }}
+    }
+    .stack_accordian {
+      background-color: {{ section.settings.accordion_background }}
+    }
+    .stack_accordian ul li span, .stack_accordian ul li p {
+      color: {{ section.settings.accordion_text_color }}
+    }
+  </style>
+
+  <script>
+    // $(".stack_accordian").find("ul li span").click(function(){
+    //   if($(this).hasClass("active")){
+    //     $(this).removeClass("active");
+    //     $(this).closest("li").find("div").slideUp("slow");
+    //   }else{
+    //     $(this).parents("ul").find("li span.active").removeClass("active");
+    //     $(this).parents("ul").find("li div").slideUp("slow");
+    //     $(this).addClass("active");
+    //     $(this).closest("li").find("div").slideToggle("slow");  
+    //   }
+    // });
+  </script>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Product info accordion",
+    "templates":["product"],
+    "class": "shopify-section--product-info-accordion",
+    "limit":1,
+    "tag": "section",
+    "settings": [
+      {
+        "type":"richtext",
+        "id":"small_content",
+        "label":"Small content"
+      },
+      {
+        "type": "header",
+        "content": "Colors",
+        "info": "Gradient replaces solid colors when set."
+      },
+      {
+        "type": "color",
+        "id": "background",
+        "label": "Background"
+      },
+      {
+        "type": "color_background",
+        "id": "background_gradient",
+        "label": "Background gradient"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text"
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Heading color"
+      },
+      {
+        "type": "color",
+        "id": "accordion_background",
+        "label": "Accordion background"
+      },
+      {
+        "type": "color",
+        "id": "accordion_text_color",
+        "label": "Accordion text"
+      }
+    ],
+    "presets":[
+      {
+        "name":"Product info accordion"
+      }
+    ]
+  }
+{% endschema %}

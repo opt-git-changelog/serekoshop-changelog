@@ -1,0 +1,296 @@
+{%- render 'section-spacing-collapsing' -%}
+
+<style>
+  {%- assign section_background = section.settings.background | default: settings.background -%}
+  {%- assign card_background = section.settings.product_card_background | default: settings.product_card_background -%}
+  {%- assign card_blends = false -%}
+
+  {%- unless section_background != 'rgba(0,0,0,0)' and card_background != 'rgba(0,0,0,0)' and section_background != card_background -%}
+    {%- assign card_blends = true -%}
+  {%- endunless -%}
+  
+</style>
+
+<div {% render 'section-properties' %} id="musthave_sec">
+  <div class="section-stack">
+    {%- assign link_url = section.settings.link_url | default: section.settings.collection.url -%}
+    {% assign heading = section.settings.title | replace:'<p>', '' | replace:'</p>', '' %}
+    {%- render 'section-header', subheading: section.settings.subheading, heading: heading, heading_color: section.settings.heading_color, heading_gradient: section.settings.heading_gradient, content: section.settings.content, link_text: section.settings.link_text, link_url: link_url -%}
+
+    <div class="floating-controls-container">
+      {%- assign scroll_area_id = 'scroll-area-' | append: section.id -%}
+      
+      <div selector="product-card">        
+        <div class="{% if section.settings.stack_products %}product-stack-grid{% else %}swiper-container product-grid-slider{% endif %}">
+          <product-list class="product-list{% if section.settings.products_per_row_desktop == 2 %} product-grid-two{% endif %}{% if section.settings.products_per_row_desktop == 4 %} product-grid-four{% endif %}{% if section.settings.products_per_row_mobile == "1" %} product-grid-xsone{% endif %}{% if section.settings.stack_products %} product-stack-wrapper{% else %} swiper-wrapper{% endif %}">
+            {%- assign products = section.settings.products | default: section.settings.collection.products -%}
+            {% assign total_pro = 0 %}
+            {%- for product in products limit: section.settings.products_count -%}
+              {%- render 'product-card', product: product, class: ' swiper-slide', stacked: section.settings.stack_products, background: section.settings.product_card_background, text_color: section.settings.product_card_text_color, show_badges: true -%}
+              {% assign total_pro = total_pro | plus:1 %}
+            {%- else -%}
+              {%- for i in (1..section.settings.products_count) -%}
+                {%- capture placeholder_image -%}product-{% cycle '1', '2', '3', '4', '5', '6' %}{%- endcapture -%}
+                {%- render 'product-card-placeholder', stacked: section.settings.stack_products, placeholder_image: placeholder_image, background: section.settings.product_card_background, text_color: section.settings.product_card_text_color, text_alignment: settings.product_info_alignment -%}
+              {%- endfor -%}
+            {%- endfor -%}
+          </product-list>
+          {% unless section.settings.stack_products %}
+            {% if section.settings.show_progress_bar %}
+              <div class="scrollbar">
+                <div class="swiper-scrollbar"></div>
+                <div aria-controls="{{ observes }}" class="scrollbar__buttons">
+                  <button class="swiper-button-prev circle-button ring group" aria-controls="{{ observes }}" disabled>
+                    <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+                    <span class="animated-arrow animated-arrow--reverse"></span>
+                  </button>              
+                  <button class="swiper-button-next circle-button ring group" aria-controls="{{ observes }}">
+                    <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+                    <span class="animated-arrow"></span>
+                  </button>
+                </div>
+              </div>
+            {% else %}
+              <div class="collections__controls">
+                <button class="swiper-button-prev circle-button ring group"><span class="animated-arrow animated-arrow--reverse"></span></button>
+                <div class="swiper-pagination page-dots"></div>
+                <button class="swiper-button-next circle-button ring group"><span class="animated-arrow"></span></button>
+              </div>
+            {% endif %}
+          {% endunless %}
+        </div>
+      </div>
+
+     {% comment %}
+      <scroll-carousel selector="product-card" id="{{ scroll_area_id }}" class="scroll-area bleed {% if section.settings.products_count > section.settings.products_per_row_desktop %}is-scrollable{% endif %}">
+        <reveal-items selector=".product-list > *">
+          <product-list class="product-list">
+            {%- assign products = section.settings.products | default: section.settings.collection.products -%}
+            {% assign total_pro = 0 %}
+            {%- for product in products limit: section.settings.products_count -%}
+              {%- render 'product-card', product: product, stacked: section.settings.stack_products, background: section.settings.product_card_background, text_color: section.settings.product_card_text_color, show_badges: true -%}
+              {% assign total_pro = total_pro | plus:1 %}
+            {%- else -%}
+              {%- for i in (1..section.settings.products_count) -%}
+                {%- capture placeholder_image -%}product-{% cycle '1', '2', '3', '4', '5', '6' %}{%- endcapture -%}
+                {%- render 'product-card-placeholder', stacked: section.settings.stack_products, placeholder_image: placeholder_image, background: section.settings.product_card_background, text_color: section.settings.product_card_text_color, text_alignment: settings.product_info_alignment -%}
+              {%- endfor -%}
+            {%- endfor -%}
+          </product-list>
+        </reveal-items>
+      </scroll-carousel>
+      
+
+      {%- if section.settings.stack_products == false -%}
+        {%- if section.settings.show_progress_bar -%}
+          {%- assign default_progress = section.settings.products_per_row_desktop | times: 1.0 | divided_by: section.settings.products_count -%}
+          {%- render 'scrollbar', observes: scroll_area_id, default_progress: default_progress, show_buttons: true -%}
+        {%- else -%}
+          {% if section.settings.products_per_row_desktop < section.settings.products_count and total_pro > section.settings.products_per_row_desktop %}
+            <div class="collections__controls">
+              <button class="circle-button ring group" is="prev-button" aria-controls="{{ scroll_area_id }}">
+                <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+                <span class="animated-arrow animated-arrow--reverse"></span>
+              </button>
+  
+              {% if total_pro > section.settings.products_count %}
+                {% assign cnt = section.settings.products_count %}
+              {% else %}
+                {% assign cnt = total_pro %}
+              {% endif %}
+              {% assign pro_cnt = cnt | minus:section.settings.products_per_row_desktop | plus:1 %}            
+            
+              <page-dots aria-controls="{{ scroll_area_id }}" class="page-dots">
+                {%- for index in (1..pro_cnt) -%}
+                  <button type="button" class="tap-area" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
+                    <span class="sr-only">{{ 'general.accessibility.go_to_item' | t: index: index }}</span>
+                  </button>
+                {%- endfor -%}
+              </page-dots>
+  
+              <button class="circle-button ring group" is="next-button" aria-controls="{{ scroll_area_id }}">
+                <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+                <span class="animated-arrow"></span>
+              </button>
+            </div>
+          {% endif %}
+          
+          {% comment %}
+          <button is="prev-button" class="circle-button circle-button--lg circle-button--fill border group" aria-controls="{{ scroll_area_id }}" disabled>
+            <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+            <span class="animated-arrow animated-arrow--reverse"></span>
+          </button>
+
+          <button is="next-button" class="circle-button circle-button--lg circle-button--fill border group" aria-controls="{{ scroll_area_id }}">
+            <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+            <span class="animated-arrow"></span>
+          </button>
+          {% endcomment %}
+        {%- endif -%}
+      
+      {%- endif -%}
+    {% endcomment %}
+    </div>
+  </div>
+</div>
+
+<script>
+  var swiper = new Swiper(".product-grid-slider", {
+    slidesPerView: {{ section.settings.products_per_row_mobile }},
+    spaceBetween: 10,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    breakpoints: {
+      768: {
+        slidesPerView: {{ section.settings.products_per_row_desktop }},
+        spaceBetween: 20
+      },
+    },
+   scrollbar: {
+      el: ".swiper-scrollbar",
+    },
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "class": "shopify-section--featured-collection",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Products",
+      "info": "Replaces collection when selected."
+    },
+    {
+      "type": "checkbox",
+      "id": "stack_products",
+      "label": "Stack products",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_progress_bar",
+      "label": "Show carousel progress bar",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "products_count",
+      "min": 2,
+      "max": 50,
+      "label": "Products to show",
+      "default": 6
+    },
+    {
+      "type": "select",
+      "id": "products_per_row_mobile",
+      "label": "Products per row (mobile)",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_desktop",
+      "min": 2,
+      "max": 4,
+      "label": "Products per row (desktop)",
+      "default": 3
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "richtext",
+      "id": "title",
+      "label": "Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL",
+      "info": "Default to collection URL."
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "View all"
+    },
+    {
+      "type": "header",
+      "content": "Colors",
+      "info": "Gradient replaces solid colors when set."
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color"
+    },
+    {
+      "type": "color_background",
+      "id": "heading_gradient",
+      "label": "Heading gradient"
+    },
+    {
+      "type": "color",
+      "id": "product_card_background",
+      "label": "Product card background"
+    },
+    {
+      "type": "color",
+      "id": "product_card_text_color",
+      "label": "Product card text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured collection"
+    }
+  ]
+}
+{% endschema %}

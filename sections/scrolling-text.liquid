@@ -1,0 +1,210 @@
+
+{% unless template contains 'blog' and blog.handle == 'press-room' %}
+{%- if section.settings.text_size == 'xsmall' -%}
+  {%- assign is_tight = true -%}
+{%- endif -%}
+
+{%- liquid
+  capture class
+    if section.settings.text_gradient != blank
+      echo 'text-gradient '
+    elsif section.settings.text_color != blank and section.settings.text_color != 'rgba(0,0,0,0)'
+      echo 'text-custom '
+    endif
+
+    if section.settings.text_style == 'outline'
+      echo 'text-stroke '
+    endif
+  endcapture
+
+  capture style
+    if section.settings.text_gradient != blank
+      echo '--gradient: ' | append: section.settings.text_gradient
+    elsif section.settings.text_color != blank and section.settings.text_color != 'rgba(0,0,0,0)'
+      echo '--text-color: ' | append: section.settings.text_color.rgb | append: ';'
+    endif
+  endcapture
+-%}
+
+{%- capture section_content -%}  
+  {% if template contains 'product' %}
+    {% if product.metafields.product.scroll_text != blank %}
+      {%- for i in (1..10) -%}
+        <span class="scrolling-text__text heading {% unless forloop.first %}motion-reduce:hidden{% endunless %}" {% unless forloop.first %}aria-hidden="true"{% endunless %}>
+          <span class="scrolling-text__text_box">
+            {% for text in product.metafields.product.scroll_text.value %}
+              {% if text != blank %}
+                <span class="{{ class }}" style="{{ style }}">
+                  {% if forloop.index == 1 %}
+                    <i>{%- render 'icon' with 'plus-box' -%}</i>
+                  {% elsif forloop.index == 2 %}
+                    <i>{%- render 'icon' with 'minus-box' -%}</i>
+                  {% elsif forloop.index == 3 %}
+                    <i>{%- render 'icon' with 'isequalto-box' -%}</i>
+                  {% endif %}
+                  <p>{{ text | replace:'<strong>', '<b>' | replace:'</strong>', '</b>'}}</p>
+                </span>
+              {% endif %}
+            {% endfor %}
+          </span>
+        </span>
+      {% endfor %}
+    {% endif %}
+  {% else %}
+    {% if section.settings.text1 != blank or section.settings.text2 != blank or section.settings.text3 != blank %}
+      {%- for i in (1..10) -%}
+        <span class="scrolling-text__text heading {% unless forloop.first %}motion-reduce:hidden{% endunless %}" {% unless forloop.first %}aria-hidden="true"{% endunless %}>
+          <span class="scrolling-text__text_box">
+            {% if section.settings.text1 != blank %}
+              <span class="{{ class }}" style="{{ style }}"><i>{%- render 'icon' with 'plus-box' -%}</i>{{ section.settings.text1 | replace:'<strong>', '<b>' | replace:'</strong>', '</b>'}}</span>
+            {% endif %}
+            {% if section.settings.text2 != blank %}
+              <span class="{{ class }}" style="{{ style }}"><i>{%- render 'icon' with 'minus-box' -%}</i>{{ section.settings.text2 | replace:'<strong>', '<b>' | replace:'</strong>', '</b>'}}</span>
+            {% endif %}
+            {% if section.settings.text3 != blank %}
+              <span class="{{ class }}" style="{{ style }}"><i>{%- render 'icon' with 'isequalto-box' -%}</i>{{ section.settings.text3 | replace:'<strong>', '<b>' | replace:'</strong>', '</b>'}}</span>
+            {% endif %}
+          </span>
+        </span>
+      {%- endfor -%}
+    {% endif %}
+  {% endif %}
+{%- endcapture -%}
+
+{% if section_content != blank %}
+  <style>
+    #shopify-section-{{ section.id }} {
+      --section-spacing-inline: 0;
+      --scrolling-text-font-size: {% if section.settings.text_size == 'xsmall' %}24px{% elsif section.settings.text_size == 'small' %}29px{% elsif section.settings.text_size == 'medium' %}32px{% elsif section.settings.text_size == 'large' %}38px{% else %}42px{% endif %};
+    }
+  </style>
+
+  {%- render 'section-spacing-collapsing' -%}
+  <div {% render 'section-properties', tight: is_tight %} id="marquee_wrapper">
+    <div class="scrolling-text scrolling-text--auto">
+     <marquee-text scrolling-speed="{{ section.settings.scrolling_speed }}" class="scrolling-text__wrapper">
+       {{- section_content -}}
+     </marquee-text>
+    </div>
+  </div>
+
+  <style>
+    span.scrolling-text__text_box span p,span.scrolling-text__text_box span p b{
+      font-size: var(--scrolling-text-font-size);
+    }
+    @media screen and (max-width: 991px) {
+      span.scrolling-text__text_box span p,span.scrolling-text__text_box span p b{
+        font-size: 22px;
+      }
+    }
+  </style>
+{%- endif -%}
+{% endunless %}
+{% schema %}
+{
+  "name": "Scrolling text",
+  "class": "shopify-section--scrolling-text",
+  "tag": "section",
+  "settings": [
+    {
+      "type":"richtext",
+      "id":"text1",
+      "label":"Text 1"
+    },
+    {
+      "type":"richtext",
+      "id":"text2",
+      "label":"Text 2"
+    },
+    {
+      "type":"richtext",
+      "id":"text3",
+      "label":"Text 3"
+    },
+    {
+      "type": "select",
+      "id": "text_size",
+      "label": "Text size",
+      "options": [
+        {
+          "value": "xsmall",
+          "label": "X-Small"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        },
+        {
+          "value": "medium",
+          "label": "Medium"
+        },
+        {
+          "value": "large",
+          "label": "Large"
+        },
+        {
+          "value": "xlarge",
+          "label": "X-Large"
+        }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "select",
+      "id": "text_style",
+      "label": "Text style",
+      "options": [
+        {
+          "value": "outline",
+          "label": "Outline"
+        },
+        {
+          "value": "fill",
+          "label": "Fill"
+        }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "scrolling_speed",
+      "min": 3,
+      "max": 20,
+      "step": 1,
+      "unit": "s",
+      "label": "Automatic scrolling speed",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Colors",
+      "info": "Gradient replaces solid colors when set. Gradient text outline and gradient background cannot be combined."
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text"
+    },
+    {
+      "type": "color_background",
+      "id": "text_gradient",
+      "label": "Text gradient"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling text"
+    }
+  ]
+}
+{% endschema %}

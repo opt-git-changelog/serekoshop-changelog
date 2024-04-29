@@ -1,0 +1,39 @@
+{% if product.metafields.product.product_rich_text != blank %}
+  <div class="product_rich_text">
+    <div class="section">
+      <div class="product_rich_text_in animate slideAbove">
+        {{ product.metafields.product.product_rich_text }}
+        <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/what_text_2.png?v=1673940577" id="rich_txt_circle" alt="texture">
+      </div>  
+    </div>
+    <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/pro_rich_txt.png?v=1674205299" id="rich_txt_texture" alt="texture">
+  </div>
+
+  <style>
+    .product_rich_text_in h4, .product_rich_text_in span {
+      color: {{ section.settings.text_color }}
+    }
+  </style>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Product rich text",
+    "templates":["product"],
+    "tag":"section",
+    "limit":1,
+    "settings": [
+      {
+        "type":"color",
+        "id":"text_color",
+        "label":"Text color",
+        "default":"#8B89C2"
+      }
+    ],
+    "presets":[
+      {
+        "name": "Product rich text"
+      }
+    ]
+  }
+{% endschema %}

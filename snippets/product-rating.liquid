@@ -1,0 +1,127 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+PRODUCT RATING
+----------------------------------------------------------------------------------------------------------------------
+
+This component generates a review badge from the product metafields information.
+
+********************************************
+Supported variables
+********************************************
+
+* product: the product from which reviews are extracted
+* show_empty: if set to true, the theme shows a 0.0 if there are no rating yet
+* show_placeholder: if set to true, show random value (useful for the product card placeholder)
+* display_mode: either "rating" (e.g.: 3.5) or "count" (e.g.: 4 reviews). Default to "rating" if none is passed
+* class: extra class to add
+{%- endcomment -%}
+
+{%- assign rating_max = 5 -%}
+
+{%- if product.metafields.reviews.rating.value != blank -%}
+  {%- assign rating_value = product.metafields.reviews.rating.value.rating | round: 1 -%}
+  {%- assign rating_count = product.metafields.reviews.rating_count.value -%}
+  {%- assign rating_max = product.metafields.reviews.rating.value.scale_max -%}
+{%- elsif show_empty -%}
+  {%- assign rating_value = 0.0 -%}
+  {%- assign rating_count = 0 -%}
+{%- elsif show_placeholder -%}
+  {%- assign rating_value = 4.5 -%}
+  {%- assign rating_count = 2 -%}
+{%- else -%}
+  {%- assign hide_rating = true -%}
+{%- endif -%}
+
+{%- unless hide_rating -%}
+  {%- if request.page_type == 'product' and block != blank -%}
+    {%- assign is_main_product = true -%}
+  {%- endif -%}
+
+  <a href="{% unless is_main_product %}{{ product.url }}{% endunless %}#shopify-product-reviews" class="rating {{ class }}" title="{{ 'product.rating_count' | t: count: rating_count }}" {{ block.shopify_attributes }}>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="svg_mask"><defs><linearGradient id="half" x1="0" x2="100%" y1="0" y2="0"><stop offset="50%" stop-color="#8b89c2"></stop><stop offset="50%" stop-color="#C4C4C4"></stop></linearGradient><symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 12" id="star"><path d="M6.5 0L7.95934 4.49139H12.6819L8.86126 7.26722L10.3206 11.7586L6.5 8.98278L2.6794 11.7586L4.13874 7.26722L0.318133 4.49139H5.04066L6.5 0Z"></path></symbol></defs></svg>
+    <p class="star-rating" aria-label="3.5 stars out of 5">
+      {% if temp != blank and temp == 'product' %}<span class="text-sm">{{ rating_value }}</span>{% endif %}
+      {% assign val_split = rating_value | split:'.' %}
+      {% assign val_split_f = val_split | first | times:1 %}
+      {% assign val_split_l = val_split | last | times:1 %}
+      {% assign is_half = false %}
+      
+      {% for i in (1..rating_max) %}
+        {% if rating_value != blank %}
+          {% if rating_value > 0.0 %}
+            {% if val_split_f > 0 and forloop.index <= val_split_f %}
+              <svg class="c-star active" width="32" height="32" viewBox="0 0 32 32">
+                <use xlink:href="#star" class="fill"></use>
+                <use xlink:href="#star" class="half_fill" fill="url(#half)"></use>
+              </svg>
+            {% elsif val_split_l > 0 and is_half == false %}
+              <svg class="c-star active half" width="32" height="32" viewBox="0 0 32 32">
+                <use xlink:href="#star" class="fill"></use>
+                <use xlink:href="#star" class="half_fill" fill="url(#half)"></use>
+              </svg>
+              {% assign is_half = true %}
+            {% else %}
+              <svg class="c-star empty_star" width="32" height="32" viewBox="0 0 32 32">
+                <use xlink:href="#star" class="fill"></use>
+                <use xlink:href="#star" class="half_fill" fill="url(#half)"></use>
+              </svg>
+            {% endif %}
+          {% else %}
+            <svg class="c-star empty_star" width="32" height="32" viewBox="0 0 32 32">
+              <use xlink:href="#star" class="fill"></use>
+              <use xlink:href="#star" class="half_fill" fill="url(#half)"></use>
+            </svg>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    
+      {% comment %}
+      <svg class="c-star active" width="32" height="32" viewBox="0 0 32 32">
+        <use xlink:href="#star" class="fill"></use>
+        <use xlink:href="#star" class="half_fill" fill="url(#half)"></use>
+      </svg>
+      <svg class="c-star active" width="32" height="32" viewBox="0 0 32 32">
+        <use xlink:href="#star" class="fill"></use>
+        <use xlink:href="#star" class="half_fill" fill="url(#half)"></use>
+      </svg>
+      <svg class="c-star active" width="32" height="32" viewBox="0 0 32 32">
+        <use xlink:href="#star" class="fill"></use>
+        <use xlink:href="#star" class="half_fill" fill="url(#half)"></use>
+      </svg>
+      <svg class="c-star active half" width="32" height="32" viewBox="0 0 32 32">
+        <use xlink:href="#star" class="fill"></use>
+        <use xlink:href="#star" class="half_fill" fill="url(#half)"></use>
+      </svg>
+      <svg class="c-star empty_star" width="32" height="32" viewBox="0 0 32 32">
+        <use xlink:href="#star" class="fill"></use>
+        <use xlink:href="#star" class="half_fill" fill="url(#half)"></use>
+      </svg>
+      {% endcomment %}
+    </p>
+
+    {% comment %}
+      <div class="rating">
+        <div class="rating__stars" role="img" aria-label="{{ 'general.rating.info' | t: rating_value: rating_value, rating_max: rating_max }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="12" viewBox="0 0 13 12" fill="none"><path d="M6.5 0L7.95934 4.49139H12.6819L8.86126 7.26722L10.3206 11.7586L6.5 8.98278L2.6794 11.7586L4.13874 7.26722L0.318133 4.49139H5.04066L6.5 0Z" fill="#B6B8DB"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="12" viewBox="0 0 13 12" fill="none"><path d="M6.5 0L7.95934 4.49139H12.6819L8.86126 7.26722L10.3206 11.7586L6.5 8.98278L2.6794 11.7586L4.13874 7.26722L0.318133 4.49139H5.04066L6.5 0Z" fill="#B6B8DB"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="12" viewBox="0 0 13 12" fill="none"><path d="M6.5 0L7.95934 4.49139H12.6819L8.86126 7.26722L10.3206 11.7586L6.5 8.98278L2.6794 11.7586L4.13874 7.26722L0.318133 4.49139H5.04066L6.5 0Z" fill="#B6B8DB"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="12" viewBox="0 0 13 12" fill="none"><path d="M6.5 0L7.95934 4.49139H12.6819L8.86126 7.26722L10.3206 11.7586L6.5 8.98278L2.6794 11.7586L4.13874 7.26722L0.318133 4.49139H5.04066L6.5 0Z" fill="#B6B8DB"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="12" viewBox="0 0 13 12" fill="none"><path d="M6.5 0L7.95934 4.49139H12.6819L8.86126 7.26722L10.3206 11.7586L6.5 8.98278L2.6794 11.7586L4.13874 7.26722L0.318133 4.49139H5.04066L6.5 0Z" fill="#C4C4C4"/></svg>
+        </div>
+      </div>
+        
+      {%- if display_mode == 'count' -%}
+        <span class="text-sm">{{- 'product.rating_count' | t: count: rating_count -}}</span>
+      {%- else -%}
+        <span class="text-sm">{{ rating_value }}</span>
+      {%- endif -%}
+      <div class="rating__stars" role="img" aria-label="{{ 'general.rating.info' | t: rating_value: rating_value, rating_max: rating_max }}">
+        {%- render 'icon' with 'rating-star', width: 12, height: 12, class: 'rating__star' -%}
+        {%- render 'icon' with 'rating-star', width: 12, height: 12, class: 'rating__star' -%}
+        {%- render 'icon' with 'rating-star', width: 12, height: 12, class: 'rating__star' -%}
+        {%- render 'icon' with 'rating-star', width: 12, height: 12, class: 'rating__star' -%}
+        {%- render 'icon' with 'rating-star', width: 12, height: 12, class: 'rating__star' -%}
+      </div>
+    {% endcomment %}
+  </a>
+{%- endunless -%}

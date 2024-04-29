@@ -1,0 +1,72 @@
+{% if product.metafields.product.review_text.value.size > 0 %}
+  <div class="section section-blends section-full text-custom">
+    <div class="product_press" style="color: {{ section.settings.text_color }};">
+      <ul>
+        <press-carousel id="carousel-{{ section.id }}" class="press__list full-bleed text-center sm:unbleed" role="region">
+          {% for review in product.metafields.product.review_text.value %}
+            <li id="block-{{ section.id }}" class="{% if forloop.first %}is-selected{% endif %}" role="group" aria-label="{{ 'general.accessibility.item_nth_of_count' | t: index: forloop.index, count: product.metafields.product.review_text.value.size }}" {{ block.shopify_attributes }}>
+              {%- if review != blank -%}
+                <div class="blockquote h3" reveal-on-scroll="true"><h3>{{ review }}</h3></div>
+              {%- endif -%}
+            </li>
+          {% endfor %}
+        </press-carousel>
+      </ul>
+      <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/pro_smear.png?v=1674213140" id="pro_press_texture" alt="texture">
+    </div>
+
+    {%- if product.metafields.product.review_text.value.size > 1 -%}
+      <div class="press__controls">
+        <button class="circle-button ring group" is="prev-button" aria-controls="carousel-{{ section.id }}">
+          <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+          <span class="animated-arrow animated-arrow--reverse"></span>
+        </button>
+        <page-dots aria-controls="carousel-{{ section.id }}" class="page-dots">
+          {%- for index in (1..product.metafields.product.review_text.value.size) -%}
+            <button type="button" class="tap-area" aria-current="{% if forloop.first %}true{% else %}false{% endif %}">
+              <span class="sr-only">{{ 'general.accessibility.go_to_item' | t: index: index }}</span>
+            </button>
+          {%- endfor -%}
+        </page-dots>
+        <button class="circle-button ring group" is="next-button" aria-controls="carousel-{{ section.id }}">
+          <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+          <span class="animated-arrow"></span>
+        </button>
+      </div>
+    {%- endif -%}
+  </div>
+{% endif %}
+
+{% comment %}
+<div class="section section-blends section-full text-custom" style="--text-color: 182 184 219;">
+  <div class="product_press">
+    <ul>
+      <li>
+        <h3>Beauty’s Next Big Thing: Sereko’s Psychodermatological Skincare; the path to healthy, glowing skin is your mind.</h3>
+      </li>
+    </ul>
+    <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/pro_smear.png?v=1674213140" id="pro_press_texture" alt="texture">
+  </div>  
+</div>
+{% endcomment %}
+{% schema %}
+{
+  "name": "Review text",
+  "class": "shopify-review-section--press",
+  "limit":1,
+  "templates":["product"],
+  "tag":"section",
+  "settings": [
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text"
+    }
+  ],
+  "presets":[
+    {
+      "name": "Review text"
+    }
+  ]
+}
+{% endschema %}

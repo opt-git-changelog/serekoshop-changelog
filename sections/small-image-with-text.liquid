@@ -1,0 +1,48 @@
+{% if product.metafields.product.small_image_with_text != blank %}
+  <div class="product-imgtxt-contain section">
+    <div class="product-imgtxt-wrap">
+      {{ product.metafields.product.small_image_with_text }}
+    </div>
+  </div>
+
+  <style>
+    .product-imgtxt-contain {
+      background-color: {{ section.settings.background }};
+    }
+  
+    .prod_txt_sec span, .prod_txt_sec p {
+      color: {{ section.settings.text_color }};
+    }
+  </style>
+{% endif %}
+  
+{% schema %}
+  {
+    "name": "Small image with text",
+    "class": "shopify-section--product-img-txt-sec",
+    "tag":"section",
+    "limit":1,
+    "templates":["product"],
+    "settings": [
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "background",
+        "label": "Background"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text"
+      }
+    ],
+    "presets":[
+      {
+        "name": "Small image with text"
+      }
+    ]
+  }
+{% endschema %}

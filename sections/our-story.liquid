@@ -1,0 +1,877 @@
+{% if section.blocks.size > 0 %}
+  {% for block in section.blocks %}
+    {%- assign previous_block_index = forloop.index0 | minus: 1 -%}
+    {%- assign previous_block = section.blocks[previous_block_index] -%}
+    {%- assign next_block = section.blocks[forloop.index] -%}
+    
+    {% case block.type %}
+      {% when 'banner_image_with_text' %}
+        {% if block.settings.img != blank %}
+          <style>
+            .site-banner {
+              --image-overlay: {{ block.settings.overlay_color.rgb }} / {{ block.settings.opacity | divided_by: 100.0 }};
+            }
+            .site-banner-img::before {
+                content: "";
+                background: rgb(var(--image-overlay));
+                border-radius: var(--rounded);
+                z-index: 1;
+                pointer-events: none;
+                transition: background .2s ease-in-out;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+          </style>
+          <div class="site-banner" style="background:{{ block.settings.bg_color }}">
+            <div class="container">
+              <div class="site-banner-img">
+                {% if block.settings.subheading != blank or block.settings.heading != blank %}
+                  <div class="site-banner-title text-align-{{ block.settings.text_align }}" style="color: {{ block.settings.text_color }}">
+                    {% if block.settings.subheading != blank %}<span>{{ block.settings.subheading }}</span>{% endif %}
+                    {% if block.settings.heading != blank %}
+                      <h1 class="h1">{{ block.settings.heading }}</h1>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                {% assign alt = block.settings.heading | strip_html %}
+                 {% assign is_mob_img = false %}
+          {% assign class = '' %}
+                {% if block.settings.mobile_img != blank %}
+                  {% assign is_mob_img = true %}
+                  {% assign class = 'visible-lg' %}
+                {% endif %}
+                {{ block.settings.img | image_url: width:block.settings.img.width | image_tag: loading: 'lazy', alt:alt, widths: '200,300,400,500,600,700,800,900,1000,1200,1336,1400,1600,1800,2000,2200,2400,2600,2800,3000,3200', class:class }}
+                {% if is_mob_img %}
+                  <img src="{{ block.settings.mobile_img | img_url:'original' }}" class="visible-xs">
+                {% endif %}
+              </div>
+              <div id="circle">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="300px" height="300px" viewBox="0 0 300 300" enable-background="new 0 0 300 300" xml:space="preserve">
+                  <defs><path id="circlePath" d="M 150, 150 m -60, 0 a 60,60 0 0,1 120,0 a 60,60 0 0,1 -120,0 "/></defs><circle cx="150" cy="150" r="75" fill="none"/><g><use xlink:href="#circlePath" fill="none"/><text fill="#000"><textPath xlink:href="#circlePath">- First Time In India - First Time In India</textPath></text></g>
+                </svg>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      
+      {% when 'richtext' %}
+        {% if block.settings.heading != blank or block.settings.content != blank or block.settings.content2 != blank %}
+          <div class="skincare-content">
+            <style>
+              .skincare-content h4 {
+                 color: {{ block.settings.heading_color }};
+              }
+            </style>
+            {% if block.settings.content != blank %}
+              <p>{{ block.settings.content | replace:'<p>', '' | replace:'</p>', '' }}
+                {% if block.settings.heading != blank %}
+                  <svg class="content-arrow" viewBox="0 0 224 228" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M218.873 216H1V161.306V1H74.5" stroke="#8B89C2"></path>
+                  <path d="M210.236 209.102C214.17 212.091 218.418 214.294 223.138 215.868C223.06 215.553 222.981 215.238 222.902 214.845C218.89 218.621 215.271 222.712 211.888 227.039C211.416 227.59 212.36 228.298 212.754 227.826C212.99 227.511 213.226 227.275 213.462 226.961C213.934 226.41 213.147 225.545 212.675 226.095C212.439 226.41 212.203 226.725 211.967 226.961C212.281 227.197 212.596 227.433 212.832 227.669C216.136 223.42 219.755 219.408 223.689 215.71C224.004 215.396 223.847 214.845 223.453 214.688C218.89 213.193 214.72 210.99 210.865 208.079C210.236 207.607 209.685 208.63 210.236 209.102Z" fill="#8B89C2"></path>
+                  </svg>
+                {% endif %}
+              </p>
+            {% endif %}
+            {% if block.settings.heading != blank %}<h4>{{ block.settings.heading }}</h4>{% endif %}
+            {% if block.settings.content2 != blank %}
+              <span class="animate slideAbove">{{ block.settings.content2 | replace:'<p>', '' | replace:'</p>', '' }}</span>
+            {% endif %}
+            {% if block.settings.img != blank %}
+              <img src="{{ block.settings.img  | img_url:'1140x' }}" title="{{ block.settings.img.alt | default:block.settings.heading }}" alt="{{ block.settings.img.alt | default:block.settings.heading }}">
+            {% endif %}
+          </div>
+        {% endif %}
+
+      {% when 'img_with_txt' %}
+        {% if block.settings.image != blank or block.settings.content != blank or block.settings.content2 != blank %}
+          <div class="inspired-sec-wrapper {% if block.settings.image_align == 'right' %} img-align-right{% endif %}">
+            <div class="section">
+              <div class="inspire-container">
+                <div class="inspired-sec">
+                  {% if block.settings.image != blank %}
+                    <div class="inspired-col inspired-col-img animate slideAbove">
+                      <img src="{{ block.settings.image | img_url:'572x' }}" title="{{ block.settings.image.alt | default:'Image' }}" alt="{{ block.settings.image.alt | default:'Image' }}">
+                    </div>
+                  {% endif %}
+                  {% if block.settings.content != blank %}
+                    <div class="inspired-col inspired-col-txt animate slideAbove">
+                      {% if block.settings.small_content != blank %}
+                        {% if block.settings.image_align == 'right' %}
+                          <svg xmlns="http://www.w3.org/2000/svg" width="96" height="83" viewBox="0 0 96 83" fill="none" id="inspired_bottom_arrow">
+                            <path d="M12.8499 1.91997L12.8504 1.91807C12.8813 1.80394 12.9387 1.74645 12.9951 1.71413C13.0597 1.67719 13.1431 1.66289 13.2226 1.67611C13.3035 1.68956 13.3458 1.72454 13.3609 1.74512L13.3612 1.74547C13.3675 1.75411 13.3949 1.79126 13.3651 1.90189C7.96901 21.5223 6.92781 45.3275 22.8041 61.0103C30.7921 68.918 40.9571 72.1351 51.5945 73.0624C62.2232 73.9889 73.3715 72.6328 83.3599 71.3562L83.3673 71.3553L83.3746 71.3541C83.4706 71.3389 83.5042 71.3652 83.5183 71.3777C83.5437 71.4001 83.576 71.4505 83.5849 71.529C83.5938 71.6069 83.5753 71.6767 83.5453 71.7222C83.5222 71.7571 83.4818 71.7961 83.3889 71.8121C72.9246 73.1637 61.3836 74.4691 50.4653 73.3333C39.5535 72.1981 29.3075 68.6286 21.3984 60.2629C6.58827 44.5863 7.47608 21.4587 12.8499 1.91997Z" stroke="#8B89C2"/>
+                            <path d="M71.2135 65.6218L71.2135 65.6217L71.2013 65.6168C71.1237 65.5855 71.1147 65.5541 71.1112 65.542L71.111 65.5414C71.1028 65.5131 71.1012 65.4535 71.1368 65.3784C71.172 65.3044 71.2269 65.2513 71.2782 65.2264C71.3185 65.2069 71.3704 65.1963 71.4502 65.2283C75.6213 66.9432 79.8623 68.7552 84.0348 70.5633C83.9222 70.6884 83.8095 70.8136 83.6968 70.939C79.546 69.2195 75.3398 67.4143 71.2135 65.6218ZM85.2063 71.4172C85.1965 71.4284 85.1867 71.4395 85.1769 71.4507C85.1599 71.3717 85.1418 71.2978 85.1251 71.2297L85.1221 71.2177C85.1043 71.1447 85.088 71.0779 85.0741 71.0141C85.1056 71.0278 85.1371 71.0415 85.1686 71.0552C85.1694 71.0555 85.1871 71.0642 85.2108 71.0959C85.234 71.1271 85.2542 71.1694 85.265 71.216C85.2874 71.3137 85.2593 71.364 85.2366 71.3857L85.2208 71.4008L85.2063 71.4172ZM83.9685 72.1335C84.1171 72.1948 84.2655 72.256 84.4139 72.317C83.2425 73.6446 82.073 74.9591 80.9028 76.2744L80.9024 76.2747C80.1477 77.1231 79.3926 77.9718 78.6367 78.8243C78.551 78.6842 78.4373 78.569 78.3118 78.4789C79.076 77.6229 79.8408 76.7634 80.6051 75.9042L80.6056 75.9037C81.7278 74.6424 82.8493 73.3819 83.9685 72.1335ZM77.7918 79.3775C77.7907 79.3858 77.7862 79.4081 77.7653 79.4441C77.4905 79.773 77.2526 80.1602 77.049 80.5049C76.9832 80.462 76.9176 80.4187 76.8512 80.3749L76.8483 80.373C76.8 80.3411 76.7512 80.3089 76.7018 80.2765C77.011 79.9325 77.3204 79.5875 77.6299 79.2417C77.644 79.2463 77.6581 79.2519 77.672 79.2583C77.7535 79.2961 77.7836 79.3425 77.7898 79.3585C77.792 79.364 77.793 79.3687 77.7918 79.3775Z" stroke="#8B89C2"/>
+                          </svg>
+                        {% else %}
+                          <svg xmlns="http://www.w3.org/2000/svg" width="167" height="111" viewBox="0 0 167 111" fill="none" id="inspired_arrow">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M17.0936 64.1423C25.2573 49.6345 38.6955 39.512 53.6842 32.749C71.8544 24.5504 91.3363 21.2426 110.837 17.9316C125.674 15.4125 140.521 12.8916 154.81 8.21321C155.685 7.92251 155.144 6.57058 154.269 6.86128C140.033 11.5365 125.142 14.0596 110.254 16.5822C87.9192 20.3667 65.591 24.1499 45.4911 35.1969C19.7937 49.2897 -0.887969 79.9575 11.8015 109.619C12.1917 110.483 13.5437 109.943 13.253 109.068C6.9184 94.3367 9.34574 77.8032 17.0936 64.1423Z" fill="#8B89C2" />
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M141.294 2.86305C145.531 4.25814 149.843 5.64557 154.165 7.03199C154.452 7.12415 154.739 7.2163 155.026 7.30846C155.077 7.3246 155.127 7.34074 155.177 7.35688C155.142 7.40309 155.106 7.4493 155.07 7.49551C154.889 7.7298 154.708 7.96407 154.527 8.1983C151.503 12.1067 148.478 16.0054 145.445 19.8283C144.92 20.5858 146.027 21.5782 146.652 20.8104C149.812 16.8265 152.972 12.8425 156.117 8.70849C156.428 8.30096 156.737 7.89197 157.047 7.48138C157.069 7.43989 157.089 7.39183 157.105 7.33928C157.203 7.02257 157.182 6.54304 156.847 6.35755C156.81 6.33736 156.77 6.32066 156.726 6.30802C156.664 6.28754 156.601 6.26706 156.539 6.24658C156.07 6.09228 155.6 5.93807 155.13 5.78395C150.753 4.35064 146.306 2.92455 141.858 1.49847C140.932 1.29177 140.358 2.55687 141.294 2.86305Z" fill="#8B89C2"/>
+                          </svg>
+                        {% endif %}
+                        <h6 class="animate writing-text sixth_show" style="color:#8b89c2">{{ block.settings.small_content | replace:'<p>', '' | replace:'</p>', '' }}</h6>
+                      {% endif %}
+                      {{ block.settings.content }}
+                    </div>
+                  {% endif %}
+                  {% if block.settings.content2 != blank and block.settings.content != blank %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="242" height="308" viewBox="0 0 242 308" fill="none" id="inspired_par_arrow">
+                      <path d="M160.5 1L241 1V219.306V297H5.12662" stroke="#8B89C2"></path>
+                      <path d="M13.7641 289.102C9.83036 292.091 5.58198 294.294 0.861548 295.868C0.940222 295.553 1.0189 295.238 1.09757 294.845C5.10993 298.621 8.72893 302.712 12.1119 307.039C12.5839 307.59 11.6399 308.298 11.2465 307.826C11.0105 307.511 10.7744 307.275 10.5384 306.961C10.0664 306.41 10.8531 305.544 11.3252 306.095C11.5612 306.41 11.7972 306.725 12.0332 306.961C11.7185 307.197 11.4038 307.433 11.1678 307.669C7.86352 303.42 4.24452 299.408 0.310832 295.71C-0.00386279 295.396 0.153484 294.845 0.546853 294.687C5.10993 293.193 9.27965 290.99 13.1347 288.079C13.7641 287.607 14.3148 288.63 13.7641 289.102Z" fill="#8B89C2"></path>
+                    </svg>
+                  {% endif %}
+                  {% if block.settings.content2 != blank %}
+                    <div class="inspired-sec-bottom animate slideAbove">
+                      {% if next_block.type == 'img_with_txt' %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="121" height="215" viewBox="0 0 121 215" fill="none" id="inspired_par_arrow2">
+                          <path d="M120.5 0.500002L38.1936 0.499996L11.9793 0.500007L11.9793 208.873" stroke="#8B89C2"></path>
+                          <path d="M18.8815 201.236C15.8919 205.17 13.689 209.418 12.1156 214.139C12.4303 214.06 12.745 213.981 13.1383 213.903C9.36198 209.89 5.27094 206.271 0.943879 202.888C0.393162 202.416 -0.314902 203.36 0.157141 203.754C0.471836 203.99 0.707857 204.226 1.02255 204.462C1.57327 204.934 2.43868 204.147 1.88796 203.675C1.57327 203.439 1.25857 203.203 1.02255 202.967C0.786531 203.282 0.55051 203.596 0.314488 203.832C4.56287 207.137 8.57524 210.756 12.2729 214.689C12.5876 215.004 13.1383 214.847 13.2957 214.453C14.7905 209.89 16.9933 205.72 19.9043 201.865C20.3763 201.236 19.3536 200.685 18.8815 201.236Z" fill="#8B89C2"></path>
+                        </svg>
+                      {% endif %}
+                      <div class="inspired-col-txt inspired-col-par">{{ block.settings.content2 }}</div>
+                    </div>
+                  {% endif %}
+                </div>         
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      
+      {% when 'heading' %}
+        {% if block.settings.title != blank %}
+          <div class="neurocalm-content animate slideAbove">
+             <style>
+              .neurocalm-content span {
+                color: {{ block.settings.txt_color }};
+              }
+            </style>
+            <span>{{ block.settings.title }}</span>
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/story_smear.png?v=1675338174" alt="img">
+          </div>
+        {% endif %}
+      
+      {% when 'promises' %}
+        {% capture promises_data %}
+          {% for i in (1..6) %}
+            {% capture title %}title{{ i }}{% endcapture %}
+            {% capture content %}content{{ i }}{% endcapture %}
+        
+            {% if block.settings[title] != blank and block.settings[content] != blank %}
+              <li class="animate slideAbove">
+                <h4>{{ block.settings[title] }}</h4>
+                {{ block.settings[content] }}
+              </li>
+            {% endif %}
+          {% endfor %}
+        {% endcapture %}
+        
+        {% if promises_data != blank %}
+          <div class="sereko-promises">
+            <style>
+              .sereko-promises ul li h4 {
+                color: {{ block.settings.heading_color }};
+              }
+            </style>
+            {% if block.settings.title != blank %}
+              <div class="title animate slideAbove">
+                <span>{{ block.settings.title | replace:'<p>', '' | replace:'</p>', '' }}</span>
+              </div>
+            {% endif %}
+            <div class="main-promises-section">
+              <ul>
+                {{ promises_data }}
+              </ul>
+            </div>
+          </div>
+        {% endif %}
+      
+      {% when 'features_icon' %}
+        {% capture features_data %}
+          {% for i in (1..6) %}
+            {% capture icon %}icon{{ i }}{% endcapture %}
+            {% capture title %}title{{ i }}{% endcapture %}
+            {% capture content %}content{{ i }}{% endcapture %}
+        
+            {% if block.settings[icon] != blank and block.settings[title] != blank or block.settings[content] != blank %}
+              <li class="animate slideAbove">
+                <div class="compromise-img">
+                  <img src="{{ block.settings[icon] | img_url:'75x' }}" title="{{ block.settings[icon].alt | default:block.settings[title] | strip_html }}" alt="{{ block.settings[icon].alt | default:block.settings[title] | strip_html }}">
+                </div>
+                <div class="compromise-content">
+                  {% if block.settings[title] != blank %}<span>{{ block.settings[title] }}</span>{% endif %}
+                  {{ block.settings[content] }}
+                </div>
+              </li>
+            {% endif %}
+          {% endfor %}
+        {% endcapture %}
+
+        {% if features_data != blank %}
+          <div class="beauty-compromises">
+            <style>
+              .beauty-compromises {
+                background: {{ block.settings.bg_color }};
+              }
+              .beauty-compromises h4, .beauty-compromises ul .compromise-content span, .beauty-compromises ul .compromise-content p {
+                color: {{ block.settings.txt_color }};
+              }
+            </style>
+            {% if block.settings.title != blank %}
+              <h4>{{ block.settings.title }}</h4>
+            {% endif %}
+            <div class="compromisesWrap">
+              <ul>
+                {{ features_data }}
+              </ul>
+            </div>
+            {% if block.settings.small_content != blank %}
+              <h6 class="animate writing-text sixth_show" style="color:#8b89c2">{{ block.settings.small_content | replace:'<p>', '' | replace:'</p>', '' }}</h6>
+            {% endif %}
+          </div>
+        {% endif %}
+      
+      {% when 'text_with_gif' %}
+        {% if block.settings.img != blank or block.settings.heading != blank or block.settings.title != blank or block.settings.content != blank %}
+          <div class="holistic_care">
+            <style>
+              .holistic_care_container h4 {
+                color: {{ block.settings.heading_color }};
+              }
+            </style>
+            <div class="section">
+              <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/story_smear_2.png?v=1675338740" alt="" id="holistic_left_smear">
+              <div class="holistic_care_container">
+                {% if block.settings.title != blank %}<span class="animate slideAbove">{{ block.settings.title | replace:'<p>', '' | replace:'</p>', '' }}</span>{% endif %}
+                {% if block.settings.heading != blank %}<h4 class="animate slideAbove">{{ block.settings.heading }}</h4>{% endif %}
+                {% if block.settings.img != blank %}
+<!--                   {{- block.settings.img | image_url: width: block.settings.img.width | image_tag -}} -->
+                  <img  src="{{ block.settings.img | img_url:'500x' }}" title="{{ block.settings.img.alt | default:block.settings.heading }}" alt="{{ block.settings.img.alt | default:block.settings.heading }}">
+                {% endif %}
+                {{ block.settings.content }}
+              </div>
+            </div>
+            {% if block.settings.img != blank %}
+              <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/story_tree.png?v=1675406863" id="tree_texture" alt="texture">
+            {% endif %}
+          </div>
+        {% endif %}
+      
+      {% when 'image_with_text' %}
+       {% if block.settings.img != blank or block.settings.title != blank or block.settings.content != blank %}
+          <div class="mind-philosophy">
+            <style>
+              .mind-philosophy h4, .mind-philosophy h6 {
+                color: {{ block.settings.txt_color }};
+              }
+            </style>
+            <div class="section">
+              {% if block.settings.img != blank %}
+                <div class="mind-philosophy-img">
+                <img class="animate slideAbove" src="{{ block.settings.img | img_url:'1112x' }}" title="{{ block.settings.img.alt | default:block.settings.title | strip_html }}" alt="{{ block.settings.img.alt | default:block.settings.title | strip_html }}">
+                  {% if block.settings.small_content != blank %}
+                    <svg xmlns="http://www.w3.org/2000/svg" width="98" height="134" viewBox="0 0 98 134" fill="none" id="mind_philosophy_image_arrrow">
+                      <path d="M96.4985 3.39978C65.7985 -6.50022 42.8984 23.0998 32.0984 47.5998C20.4985 74.0998 16.9985 103.2 13.4985 131.7C13.3985 132.6 11.8985 132.7 11.9985 131.7C15.5984 101.3 19.3985 70.0998 32.8985 42.1998C44.4985 18.4998 67.5985 -7.40022 96.8985 1.99978C97.7985 2.29978 97.3985 3.69978 96.4985 3.39978Z" fill="{{ block.settings.txt_color }}"/>
+                      <path d="M2.29843 118.8C1.89843 118.5 1.59843 118.2 1.19843 117.9C1.59843 117.6 1.99843 117.3 2.39843 117C3.79843 119.2 5.19843 121.4 6.69843 123.6C7.99843 125.5 10.9984 130.8 13.3984 131.1C15.4984 131.3 18.5984 128 20.2984 126.8C22.7984 125 25.2984 123.2 27.7984 121.4C28.4984 120.9 29.3984 122 28.6984 122.6C28.1984 123 27.5984 123.5 27.0984 123.9C26.3984 124.5 25.2984 123.4 25.9984 122.8C26.4984 122.4 27.0984 121.9 27.5984 121.5C27.8984 121.9 28.1984 122.3 28.4984 122.7C23.4984 126.3 18.4984 129.9 13.4984 133.6C13.1984 133.8 12.7984 133.7 12.5984 133.5C8.29843 128.6 4.39843 123.5 0.998428 117.9C0.498428 117.1 1.59843 116.5 2.19843 117C2.59843 117.3 2.89843 117.6 3.29843 117.9C4.09843 118.3 3.09843 119.4 2.29843 118.8Z" fill="{{ block.settings.txt_color }}"/>
+                    </svg>
+                    <h6 class="animate writing-text sixth_show animated">{{ block.settings.small_content | replace:'<p>', '' | replace:'</p>', '' }}</h6>
+                  {% endif %}
+                </div>
+              {% endif %}
+              {% if block.settings.title != blank %}<h4>{{ block.settings.title }}</h4>{% endif %}
+              {% if block.settings.content != blank %}
+                <p class="animate slideAbove">{{ block.settings.content | replace:'<p>', '' | replace:'</p>', '' }}
+                {% if block.settings.button_txt != blank and block.settings.button_link != blank %}
+                  <svg xmlns="http://www.w3.org/2000/svg" width="158" height="112" viewBox="0 0 158 112" fill="none" id="mind_philosophy_arrrow">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M107.184 82.9409C86.6778 87.7354 65.9986 85.5558 45.313 83.3756C31.5247 81.9224 17.7336 80.4688 3.98885 81.0802C3.14329 81.1207 2.99978 79.7915 3.84534 79.751C17.6373 79.1498 31.3897 80.5946 45.1321 82.0383C63.1939 83.9358 81.2386 85.8315 99.3337 83.0781C114.26 80.8068 128.647 75.1814 139.456 64.3734C149.687 54.2112 155.924 40.1926 153.968 25.5997C153.927 24.7542 155.256 24.6106 155.387 25.4718C159.269 54.8385 133.393 76.8382 107.184 82.9409Z" fill="#8B89C2"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.19677 81.0031C7.65063 83.2823 11.0951 85.5599 14.4727 87.826C15.2246 88.3283 14.404 89.3049 13.6364 88.8931C10.0814 86.5478 6.5263 84.2026 3.03401 81.8682C2.63182 81.5993 2.23047 81.3306 1.83004 81.0621C1.78008 81.0286 1.73013 80.9951 1.6802 80.9616C1.59982 80.9121 1.54205 80.8497 1.50277 80.7792C1.39015 80.5772 1.42956 80.3099 1.52388 80.0979C1.54537 80.0496 1.56972 80.0041 1.59576 79.963C1.62444 79.9176 1.65518 79.8775 1.68645 79.8446C2.08501 79.5405 2.48329 79.2381 2.88131 78.9372C6.66175 76.0791 10.4191 73.355 14.1764 70.631C14.919 70.1068 15.6522 71.2581 15.0001 71.7979C11.3959 74.411 7.77995 77.0922 4.16243 79.7824C3.94889 79.9412 3.73534 80.1 3.52178 80.2589C3.45081 80.3117 3.37984 80.3645 3.30887 80.4173C3.37588 80.4615 3.44289 80.5057 3.50989 80.5499C3.73888 80.701 3.96785 80.8521 4.19677 81.0031Z" fill="#8B89C2"/>
+                  </svg>
+                {% endif %}
+              </p> 
+              {% endif %}
+              {% if block.settings.button_txt != blank and block.settings.button_link != blank %}
+                <a class="button button--xl button--outline" href="{{ block.settings.button_link }}">{{ block.settings.button_txt }}</a>
+              {% endif %}
+            </div>
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/about_texture_1.png?v=1673874772" id="mind_texture" alt="texture">
+          </div>
+        {% endif %}
+    {% endcase %}
+  {% endfor %}
+{% endif %}
+
+<div class="instagram_sec">
+  <div class="section section-blends section-full text-custom">
+    <div class="section-stack section-stack--center">
+      <div class="section-stack__intro">
+        <div class="prose text-center">
+          <section-header class="section-header">
+            <div class="prose animate slideUp animated">
+              <h2 class="h2 an-target">
+                <span class="text-custom">from our <strong>instagram</strong></span>
+              </h2>
+            </div>
+          </section-header>
+        </div>
+      </div>
+      <div class="section-stack__main insta_swiper">
+        <div class="insta_wrap swiper-wrapper">
+          <div class="insta_item swiper-slide">
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/insta_1.png?v=1675405161" alt="insta_1">
+          </div>
+          <div class="insta_item swiper-slide">
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/insta_2.png?v=1675405161" alt="insta_2">
+          </div>
+          <div class="insta_item swiper-slide">
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/insta_3.png?v=1675405160" alt="insta_3">
+          </div>
+          <div class="insta_item swiper-slide">
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/insta_4.png?v=1675405161" alt="insta_4">
+          </div>      
+<!--           <div class="insta_item swiper-slide">
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/insta_1.png?v=1675405161" alt="" />
+          </div>
+          <div class="insta_item swiper-slide">
+            <img src="https://cdn.shopify.com/s/files/1/0691/8062/1113/files/insta_2.png?v=1675405161" alt="" />
+          </div> -->
+        </div>
+<!--         <div class="collections__controls">
+          <button class="swiper-button-prev circle-button ring group"><span class="animated-arrow animated-arrow--reverse"></span></button>
+          <div class="swiper-pagination page-dots"></div>
+          <button class="swiper-button-next circle-button ring group"><span class="animated-arrow"></span></button>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /*var swiper = new Swiper(".insta_swiper", {
+    slidesPerView: 4,
+    pagination: {
+      el: ".swiper-pagination",
+      clickable: true
+    },
+    navigation: {
+      nextEl: ".swiper-button-next",
+      prevEl: ".swiper-button-prev",
+    },
+    breakpoints: {
+      768: {
+        slidesPerView: 2,
+        spaceBetween: 20
+      },
+    }
+  });*/
+</script>
+
+{% schema %}
+  {
+    "name": "Our Story",
+    "settings": [],
+    "blocks":[
+      {
+        "type":"banner_image_with_text",
+        "name":"Banner image with text",
+        "settings":[
+          {
+            "type":"image_picker",
+            "id":"img",
+            "label":"Image"
+          },
+          {
+            "type":"image_picker",
+            "id":"mobile_img",
+            "label":"Mobile image"
+          },
+          {
+            "type":"text",
+            "id":"subheading",
+            "label":"Subheading"
+          },
+          {
+            "type":"richtext",
+            "id":"heading",
+            "label":"Heading"
+          },
+          {
+            "type":"select",
+            "id":"text_align",
+            "label":"Text align",
+            "options":[
+              {
+                "label":"Left",
+                "value":"left"
+              },
+              {
+                "label":"Center",
+                "value":"center"
+              },
+              {
+                "label":"Right",
+                "value":"right"
+              }
+            ],
+            "default":"center"
+          },
+          {
+            "type":"header",
+            "content":"Colors"
+          },
+          {
+            "type":"color",
+            "id":"bg_color",
+            "label":"Background color"
+          },
+          {
+            "type":"color",
+            "id":"text_color",
+            "label":"Text color"
+          },
+          {
+            "type": "color",
+            "id": "overlay_color",
+            "label": "Overlay",
+            "default": "#000000"
+          },
+          {
+            "type": "range",
+            "id": "opacity",
+            "label": "Overlay opacity",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "unit": "%",
+            "default": 0
+          }
+        ]
+      },
+      {
+        "type":"richtext",
+        "name":"Map image with text",
+        "settings":[
+          {
+            "type":"image_picker",
+            "id":"img",
+            "label":"Image"
+          },
+          {
+            "type":"text",
+            "id":"heading",
+            "label":"Heading"
+          },
+          {
+            "type":"richtext",
+            "id":"content",
+            "label":"Content"
+          },
+          {
+            "type":"richtext",
+            "id":"content2",
+            "label":"Subtext"
+          },
+          {
+            "type":"header",
+            "content":"Colors"
+          },
+          {
+            "type":"color",
+            "id":"heading_color",
+            "label":"Heading color"
+          }
+        ]
+      },
+      {
+        "type":"img_with_txt",
+        "name":"Small image with text",
+        "limit":2,
+        "settings":[
+          {
+            "type":"image_picker",
+            "id":"image",
+            "label":"Image"
+          },
+          {
+            "type":"richtext",
+            "id":"content",
+            "label":"Content"
+          },
+          {
+            "type":"richtext",
+            "id":"small_content",
+            "label":"Small content"
+          },
+          {
+            "type":"select",
+            "id":"image_align",
+            "label":"Image alignment",
+            "options":[
+              {
+                "label":"Left",
+                "value":"left"
+              },
+              {
+                "label":"Right",
+                "value":"right"
+              }
+            ],
+            "default":"left"
+          },
+          {
+            "type":"richtext",
+            "id":"content2",
+            "label":"Bottom content"
+          }
+        ]
+      },
+      {
+        "type":"heading",
+        "name":"Text",
+        "settings":[
+          {
+            "type":"textarea",
+            "id":"title",
+            "label":"Text"
+          },
+          {
+            "type":"header",
+            "content":"Color"
+          },
+          {
+            "type":"color",
+            "id":"txt_color",
+            "label":"Text color"
+          }
+        ]
+      },
+      {
+        "type":"promises",
+        "name":"Promises",
+        "settings":[
+          {
+            "type":"richtext",
+            "id":"title",
+            "label":"Title"
+          },
+          {
+            "type":"header",
+            "content":"Promises 1"
+          },
+          {
+            "type":"text",
+            "id":"title1",
+            "label":"Heading"
+          },
+          {
+            "type":"richtext",
+            "id":"content1",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Promises 2"
+          },
+          {
+            "type":"text",
+            "id":"title2",
+            "label":"Heading"
+          },
+          {
+            "type":"richtext",
+            "id":"content2",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Promises 3"
+          },
+          {
+            "type":"text",
+            "id":"title3",
+            "label":"Heading"
+          },
+          {
+            "type":"richtext",
+            "id":"content3",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Promises 4"
+          },
+          {
+            "type":"text",
+            "id":"title4",
+            "label":"Heading"
+          },
+          {
+            "type":"richtext",
+            "id":"content4",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Promises 5"
+          },
+          {
+            "type":"text",
+            "id":"title5",
+            "label":"Heading"
+          },
+          {
+            "type":"richtext",
+            "id":"content5",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Promises 6"
+          },
+          {
+            "type":"text",
+            "id":"title6",
+            "label":"Heading"
+          },
+          {
+            "type":"richtext",
+            "id":"content6",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Colors"
+          },
+          {
+            "type":"color",
+            "id":"heading_color",
+            "label":"Heading color"
+          }
+        ]
+      },
+      {
+        "type":"features_icon",
+        "name":"Features",
+        "settings":[
+          {
+            "type":"text",
+            "id":"title",
+            "label":"Title"
+          },
+          {
+            "type":"richtext",
+            "id":"small_content",
+            "label":"Small content"
+          },
+          {
+            "type":"header",
+            "content":"Feature 1"
+          },
+          {
+            "type":"image_picker",
+            "id":"icon1",
+            "label":"Icon"
+          },
+          {
+            "type":"text",
+            "id":"title1",
+            "label":"Title"
+          },
+          {
+            "type":"richtext",
+            "id":"content1",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Feature 2"
+          },
+          {
+            "type":"image_picker",
+            "id":"icon2",
+            "label":"Icon"
+          },
+          {
+            "type":"text",
+            "id":"title2",
+            "label":"Title"
+          },
+          {
+            "type":"richtext",
+            "id":"content2",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Feature 3"
+          },
+          {
+            "type":"image_picker",
+            "id":"icon3",
+            "label":"Icon"
+          },
+          {
+            "type":"text",
+            "id":"title3",
+            "label":"Title"
+          },
+          {
+            "type":"richtext",
+            "id":"content3",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Feature 4"
+          },
+          {
+            "type":"image_picker",
+            "id":"icon4",
+            "label":"Icon"
+          },
+          {
+            "type":"text",
+            "id":"title4",
+            "label":"Title"
+          },
+          {
+            "type":"richtext",
+            "id":"content4",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Feature 5"
+          },
+          {
+            "type":"image_picker",
+            "id":"icon5",
+            "label":"Icon"
+          },
+          {
+            "type":"text",
+            "id":"title5",
+            "label":"Title"
+          },
+          {
+            "type":"richtext",
+            "id":"content5",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Feature 6"
+          },
+          {
+            "type":"image_picker",
+            "id":"icon6",
+            "label":"Icon"
+          },
+          {
+            "type":"text",
+            "id":"title6",
+            "label":"Title"
+          },
+          {
+            "type":"richtext",
+            "id":"content6",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Colors"
+          },
+          {
+            "type":"color",
+            "id":"bg_color",
+            "label":"Background color"
+          },
+          {
+            "type":"color",
+            "id":"txt_color",
+            "label":"Text color"
+          }
+        ]
+      },
+      {
+        "type":"text_with_gif",
+        "name":"Text with GIF",
+        "settings":[
+          {
+            "type":"image_picker",
+            "id":"img",
+            "label":"GIF"
+          },
+          {
+            "type":"richtext",
+            "id":"title",
+            "label":"Subheading"
+          },
+          {
+            "type":"text",
+            "id":"heading",
+            "label":"Heading"
+          },
+          {
+            "type":"richtext",
+            "id":"content",
+            "label":"Content"
+          },
+          {
+            "type":"header",
+            "content":"Color"
+          },
+          {
+            "type":"color",
+            "id":"heading_color",
+            "label":"Heading color"
+          }
+        ]
+      },
+      {
+        "type":"image_with_text",
+        "name":"Image with text",
+        "settings":[
+          {
+            "type":"image_picker",
+            "id":"img",
+            "label":"Image"
+          },
+          {
+            "type":"text",
+            "id":"title",
+            "label":"Heading"
+          },
+          {
+            "type":"richtext",
+            "id":"content",
+            "label":"Content"
+          },
+          {
+            "type":"richtext",
+            "id":"small_content",
+            "label":"Small content"
+          },
+          {
+            "type":"text",
+            "id":"button_txt",
+            "label":"Button text"
+          },
+          {
+            "type":"url",
+            "id":"button_link",
+            "label":"Button link"
+          },
+          {
+            "type":"header",
+            "content":"Color"
+          },
+          {
+            "type":"color",
+            "id":"txt_color",
+            "label":"Heading color"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

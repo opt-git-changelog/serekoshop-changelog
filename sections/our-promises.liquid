@@ -1,0 +1,94 @@
+{% if section.blocks.size > 0 %}
+  {% capture promise_data %}
+    {% for block in section.blocks %}
+      {% if block.settings.tag != blank and block.settings.icon != blank and block.settings.title != blank %}
+      {% assign tag = 'our_promise-' | append:block.settings.tag %}
+        {% if product.tags contains tag %}
+          <li class="animate slideAbove">
+            <img src="{{ block.settings.icon | img_url:'150x' }}" title="{{ block.settings.title | strip_html }}" alt="{{ block.settings.title | strip_html }}">
+            {{ block.settings.title }}
+          </li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endcapture %}
+{% endif %}
+
+{% if promise_data != blank %}
+  {% style %}
+    .our_promise_box {
+      background-color: {{ section.settings.background }};
+    }
+
+    .our_promise_in p {
+      color: {{ section.settings.text_color }};
+    }
+  {% endstyle %}
+  <div class="our_promise_box">
+    <div class="section">
+      {% if section.settings.title != blank %}<h5>{{ section.settings.title }}</h5>{% endif %}
+      <div class="our_promise_in">
+        <ul>{{ promise_data }}</ul>          
+      </div>
+    </div>
+  </div>
+{% endif %}
+  
+{% schema %}
+  {
+    "name": "Our promises",
+    "templates":["product"],
+    "limit":1,
+    "tag":"section",
+    "settings": [
+      {
+        "type":"text",
+        "id":"title",
+        "label":"Title"
+      },
+      {
+        "type":"color",
+        "id":"background",
+        "label":"Background color"
+      },
+      {
+        "type":"color",
+        "id":"text_color",
+        "label":"Text color"
+      }
+    ],
+    "blocks":[
+      {
+        "type":"our_promise",
+        "name":"our promise",
+        "settings":[
+          {
+            "type":"paragraph",
+            "content":"If a product tag matches this tag value then this icon will appear on that product"
+          },
+          {
+            "type":"text",
+            "id":"tag",
+            "label":"Tag",
+            "info":"You must add a tag with the 'our_promise-' prefix to the product such as 'our_promise-fresh-made'"
+          },
+          {
+            "type":"image_picker",
+            "id":"icon",
+            "label":"Icon"
+          },
+          {
+            "type":"richtext",
+            "id":"title",
+            "label":"Title"
+          }
+        ]
+      }
+    ],
+    "presets":[
+      {
+        "name": "Our promises"
+      }
+    ]
+  }
+{% endschema %}

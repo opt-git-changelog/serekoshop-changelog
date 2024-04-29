@@ -1,0 +1,50 @@
+<div class="sm:container">
+  <div class="customer-form">
+    <div {% render 'surface', class: 'customer-form__box', background_fallback: 'bg-secondary' %}>
+      <div class="customer-form__box-inner text-center">
+        <div class="v-stack gap-12">
+          <h1 class="h2 text-center">
+            {%- assign content = 'customer.activate_account.title' | t -%}
+            {%- render 'styled-text', content: content, gradient: section.settings.heading_gradient -%}
+          </h1>
+
+          {%- form 'activate_customer_password', class: 'form', id: "activate_cust_pass" -%}
+            <div class="fieldset">
+              {%- if form.errors -%}
+                {%- assign form_errors = form.errors | default_errors -%}
+                {%- render 'banner', content: form.errors.messages['form'], status: 'error' -%}
+              {% else %}
+                {%- assign icon = 'error' -%}
+                <div class="banner banner--error justify-center" style="display: none;">
+                  {%- render 'icon' with icon, width: icon_width, height: icon_width, class: 'offset-icon' -%}<p></p>
+                </div>
+              {%- endif -%}
+
+              {%- assign password_label = 'customer.activate_account.password' | t -%}
+              {%- render 'input', type: 'password', name: 'customer[password]', class:' passwords', label: password_label, autocomplete: 'new-password' -%}
+
+              {%- assign password_label_confirmation = 'customer.activate_account.password_confirmation' | t -%}
+              {%- render 'input', type: 'password', name: 'customer[password_confirmation]', class:' confirm_password', label: password_label_confirmation, autocomplete: 'new-password' -%}
+            </div>
+
+            <div class="fieldset">
+              {%- assign submit_label = 'customer.activate_account.submit' | t -%}
+              {%- render 'button', content: submit_label, type: 'submit', cls: ' activate_acc_btn', style: 'fill', size: 'xl', stretch: true, secondary: true -%}
+
+              {%- assign cancel_label = 'customer.activate_account.cancel' | t -%}
+              {%- render 'button', content: cancel_label, name: 'decline', type: 'submit', size: 'xl', stretch: true, secondary: true, style: 'fill' -%}
+            </div>
+          {%- endform -%}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Customer activate account",
+  "class": "shopify-section--main-customers-activate-account",
+  "tag": "section"
+}
+{% endschema %}

@@ -1,0 +1,120 @@
+{% capture block_data %}
+  {% if section.blocks.size > 0 %}
+    {% for block in section.blocks %}
+      {% if block.settings.title != blank %}
+        <li>{{ block.settings.title | replace:'<p>', '' | replace:'</p>', '' | replace:'<br/>', '<br>' }}</li>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endcapture %}
+
+{% if section.settings.title != blank or section.settings.content != blank or block_data != blank %}
+  <div class="section   section-blends section-full text-custom" style="--text-color: {% echo section.settings.text_color.rgb %};">
+    <div class="section-stack">
+      <div class="distressed-skin">
+        {% if section.settings.title != blank or section.settings.content != blank %}
+          <span class="animate first_show" style="color: {% echo section.settings.heading_text_color %}">{{ section.settings.title }}</span>
+          <p class="animate second_show">{{ section.settings.content | replace:'<p>', '' | replace:'</p>', '' | replace:'<br/>', '<br>' }}
+            {% if block_data != blank %}
+              <svg xmlns="http://www.w3.org/2000/svg" width="297" height="238" viewBox="0 0 297 238" fill="none" id="bottom_arrow"><path d="M297 1H1V136.306V226H117.873" stroke="{% echo section.settings.heading_text_color %}"/><g clip-path="url(#clip0_15_725)"><path d="M108.236 219.101C112.17 222.091 116.418 224.294 121.139 225.867C121.06 225.553 120.981 225.238 120.902 224.845C116.89 228.621 113.271 232.712 109.888 237.039C109.416 237.59 110.36 238.298 110.754 237.826C110.99 237.511 111.226 237.275 111.462 236.96C111.934 236.41 111.147 235.544 110.675 236.095C110.439 236.41 110.203 236.724 109.967 236.96C110.282 237.196 110.596 237.432 110.832 237.668C114.137 233.42 117.756 229.408 121.689 225.71C122.004 225.395 121.847 224.845 121.453 224.687C116.89 223.193 112.72 220.99 108.865 218.079C108.236 217.607 107.685 218.629 108.236 219.101Z" fill="{{ section.settings.heading_text_color }}"/></g><defs><clipPath id="clip0_15_725"><rect width="19.9831" height="13.8466" fill="white" transform="translate(108 237.983) rotate(-90)"/></clipPath></defs></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="103" height="123" viewBox="0 0 103 123" fill="none" id="bottom_arrow_xs"><path d="M12.4916 118.365V1.49158L102.185 1.49158" stroke="#8B89C2"/><g clip-path="url(#clip0_419_4)"><path d="M19.3902 108.728C16.4006 112.661 14.1977 116.91 12.6242 121.63C12.9389 121.551 13.2536 121.473 13.647 121.394C9.87064 117.382 5.77961 113.763 1.45255 110.38C0.901829 109.908 0.193765 110.852 0.665808 111.245C0.980503 111.481 1.21652 111.717 1.53122 111.953C2.08194 112.425 2.94735 111.639 2.39663 111.166C2.08194 110.93 1.76724 110.694 1.53122 110.458C1.2952 110.773 1.05918 111.088 0.823155 111.324C5.07154 114.628 9.08391 118.247 12.7816 122.181C13.0963 122.496 13.647 122.338 13.8043 121.945C15.2991 117.382 17.502 113.212 20.4129 109.357C20.885 108.728 19.8622 108.177 19.3902 108.728Z" fill="#8B89C2"/></g><defs><clipPath id="clip0_419_4"><rect width="19.9831" height="13.8466" fill="white" transform="translate(0.508423 108.492)"/></clipPath></defs></svg>
+            {% endif %}
+            {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+              <svg xmlns="http://www.w3.org/2000/svg" width="172" height="121" viewBox="0 0 172 121" fill="none" id="button_arrrow" class="animate fourth_show"><g clip-path="url(#clip0_1_473)"><path d="M169.545 26.9132C173.772 58.8965 145.591 82.8565 117.046 89.5029C79.8263 98.2051 42.0833 85.8117 4.65622 87.4764C3.73533 87.5205 3.57903 86.0729 4.49992 86.0288C39.2629 84.5136 73.7947 94.9327 108.497 89.6523C124.753 87.1787 140.422 81.052 152.193 69.281C163.336 58.2134 170.129 42.9456 167.999 27.0525C167.954 26.1316 169.402 25.9753 169.545 26.9132Z" fill="{% echo section.settings.heading_text_color %}"/><path d="M15.1632 95.9855C10.7898 93.1004 6.41643 90.2153 2.1416 87.3473C1.68285 87.0652 1.90034 86.3924 2.14841 86.1307C6.70535 82.6545 11.2283 79.3753 15.7513 76.0962C16.56 75.5253 17.3586 76.7792 16.6484 77.3671C12.1254 80.6462 7.58545 84.024 3.0455 87.4017C3.01493 86.9905 3.08289 86.5963 3.05231 86.1851C7.42569 89.0702 11.7991 91.9553 16.0739 94.8233C16.8928 95.3704 15.9991 96.434 15.1632 95.9855Z" fill="{% echo section.settings.heading_text_color %}"/></g><defs><clipPath id="clip0_1_473"><rect width="94.8" height="157.3" fill="white" transform="matrix(-0.169918 0.985458 0.985458 0.169918 16.7852 0.0662231)"/></clipPath></defs></svg>
+            {% endif %}
+          </p>
+        {% endif %}
+        {% if section.settings.button_text != blank and section.settings.button_link != blank %}
+            {%- render 'button', href: section.settings.button_link, content: section.settings.button_text, size: 'xl'  -%}
+        {% endif %}
+        {% if block_data != blank %}
+          <ul class="animate fifth_show">{{ block_data }}</ul>
+        {% endif %}
+        {% if section.settings.extra_text != blank %}
+          <h6 class="animate writing-text sixth_show" style="color:{% echo section.settings.small_text_color %}">{{ section.settings.extra_text | replace:'<p>', '' | replace:'</p>', '' | replace:'<br/>', '<br>' }}</h6>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<style>
+.distressed-skin ul li {
+  color: {% echo section.settings.heading_text_color %};
+}
+.distressed-skin ul li::after {
+  content: '';border-right: 1px solid {% echo section.settings.heading_text_color %};
+}
+/*  Move below css  */
+</style>
+              
+{% schema %}
+  {
+    "name": "Features text",
+    "settings": [
+      {
+        "type":"text",
+        "id":"title",
+        "label":"Heading"
+      },
+      {
+        "type":"richtext",
+        "id":"content",
+        "label":"Content"
+      },
+      {
+        "type":"richtext",
+        "id":"extra_text",
+        "label":"Small content"
+      },
+      {
+        "type":"text",
+        "id":"button_text",
+        "label":"Button text"
+      },
+      {
+        "type":"url",
+        "id":"button_link",
+        "label":"Button link"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "heading_text_color",
+        "label": "Heading text"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text"
+      },
+      {
+        "type": "color",
+        "id": "small_text_color",
+        "label": "Small text"
+      }
+    ],
+    "blocks":[
+      {
+        "type":"features",
+        "name":"Features",
+        "limit":5,
+        "settings":[
+          {
+            "type":"richtext",
+            "id":"title",
+            "label":"Text"
+          }
+        ]
+      }
+    ],
+    "presets":[
+      {
+        "name":"Features text"
+      }
+    ]
+  }
+{% endschema %}

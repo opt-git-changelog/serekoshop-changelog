@@ -1,0 +1,181 @@
+{% capture curr_coll %}{{ collection.title | handleize }}{% endcapture %}
+{% capture subcategory_data %}
+  {% for link in linklists[curr_coll].links %}
+    {% if link.type == 'product_link' %}
+      {% assign sub_col_hndl = link.url | split:'/' | last %}
+      {% assign sub_col = all_products[sub_col_hndl] %}
+    {% elsif link.type == 'collection_link' %}
+      {% assign sub_col_hndl = link.url | split:'/' | last %}
+      {% assign sub_col = collections[sub_col_hndl] %}
+    {% endif %}
+    
+    <div {% render 'surface', class: 'image-link-blocks__item group rounded', text_color: block.settings.text_color, background_fallback: 'bg-secondary' %} {{ block.shopify_attributes }}>
+      {%- capture item_content -%}
+        {% if link.type == 'collection_link' %}
+          {%- if sub_col.metafields.collection.small_image != blank -%}
+            {{- sub_col.metafields.collection.small_image | image_url: width: sub_col.metafields.collection.small_image.width | image_tag: loading: 'lazy', alt:link.title, sizes: '(max-width: 699px) 160px, 285px', widths: '200,300,400,500,600,700,800,900,1000,1200', class: 'zoom-image' -}}
+          {% else %}
+            {{- 'image' | placeholder_svg_tag: 'zoom-image placeholder' -}}
+          {%- endif -%}
+        {% elsif link.type == 'product_link' %}
+          {%- if sub_col.images[0] != blank -%}
+            <img src="{{ sub_col.images[0] | img_url:'203x' }}" alt="{{ sub_col.images[0].alt | default:link.title }}">
+          {% else %}
+            {{- 'image' | placeholder_svg_tag: 'zoom-image placeholder' -}}
+          {%- endif -%}
+        {% else %}
+          {{- 'image' | placeholder_svg_tag: 'zoom-image placeholder' -}}
+        {% endif %}
+        <div class="place-self-center-center w-full bold hidden">
+          <div class="h-stack justify-center gap-2">{{- link.title | escape -}}</div>
+        </div>
+      {%- endcapture -%}
+      <a href="{{ link.url }}" class="content-over-media rounded" style="--content-over-media-overlay: {{ section.settings.overlay_color.rgb }} / {{ section.settings.overlay_opacity | divided_by: 100.0 }}">
+        {{- item_content -}}
+      </a>
+    </div>
+  {% endfor %}
+{% endcapture %}
+
+{% if subcategory_data != blank and collection.products_count > 0 %}
+  {%- render 'section-spacing-collapsing' -%}
+  <style>
+    {%- assign block_size = section.settings.block_size -%}
+  
+    #shopify-section-{{ section.id }} .image-link-blocks {
+      --image-link-blocks-item-width: {% if block_size == 'small' %}32vw{% elsif block_size == 'medium' %}38vw{% else %}48vw{% endif %};
+      --image-link-blocks-grid: auto / auto-flow var(--image-link-blocks-item-width);
+      
+      align-items: flex-start;  
+      --content-over-media-gap: var(--grid-gutter);
+    }
+    #shopify-section-{{ section.id }}{
+      overflow-x: hidden;
+    }
+    #shopify-section-{{ section.id }} .rounded{
+      --rounded: 100%;
+      border-radius: var(--rounded);
+    }    
+    #shopify-section-{{ section.id }} .content-over-media .h-stack{
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    #shopify-section-{{ section.id }} .image-link-blocks.no-slider{
+      justify-content: center;
+    }=
+    @media screen and (min-width: 700px) {
+      #shopify-section-{{ section.id }} .image-link-blocks {
+        --image-link-blocks-item-width: {% if block_size == 'small' %}18vw{% elsif block_size == 'medium' %}22vw{% else %}26vw{% endif %};
+      }      
+    }  
+    @media screen and (min-width: 1000px) {
+      #shopify-section-{{ section.id }} .image-link-blocks {
+        --image-link-blocks-items-per-row: {% if block_size == 'small' %}6{% elsif block_size == 'medium' %}5{% else %}4{% endif %};
+        --image-link-blocks-grid: auto / auto-flow calc(var(--container-inner-width) / var(--image-link-blocks-items-per-row) - (var(--grid-gutter) / var(--image-link-blocks-items-per-row) * (var(--image-link-blocks-items-per-row) - 1)));
+      }
+    }
+    @media screen and (min-width: 1400px) {
+      #shopify-section-{{ section.id }} .image-link-blocks {
+        --image-link-blocks-items-per-row: {% if block_size == 'small' %}7{% elsif block_size == 'medium' %}6{% else %}5{% endif %};
+      }
+    }
+    @media screen and (max-width: 699px) {
+      #shopify-section-{{ section.id }} .shopify-subcate .image-link-blocks {
+        --image-link-blocks-item-width: {% if block_size == 'small' %}33.33%{% elsif block_size == 'medium' %}33.33%{% else %}33.33%{% endif %};
+      }
+      .shopify-subcate .floating-controls-container {
+        overflow: hidden;
+      }
+      .shopify-subcate .image-link-blocks{
+        padding: 0;
+        gap: 0;
+        margin: 0 -4px;
+      }
+      .shopify-subcate .image-link-blocks__item {
+        padding: 0 4px;
+      }
+      .shopify_subcategory .section{
+        padding-bottom: 0;
+      }
+      #shopify-section-{{ section.id }}.shopify_subcategory .content-over-media{
+        grid-template : 0 minmax(0,1fr) 0 / 1fr minmax(0,min(var(--container-max-width),100% - var(--content-over-media-gap, var(--content-over-media-column-gap, var(--container-gutter))) * 2)) 1fr;
+      }  
+    }
+  </style>
+  <div {% render 'section-properties' %}>
+    <div class="section-stack shopify-subcate">
+      <div class="floating-controls-container">
+        {%- assign scroll_area_id = 'scroll-area-' | append: section.id -%}
+        <image-link-blocks id="{{ scroll_area_id }}" class="image-link-blocks scroll-area bleed md:unbleed no-slider">
+          {{ subcategory_data }}
+        </image-link-blocks>
+
+        <button is="prev-button" class="circle-button circle-button--fill border group" aria-controls="{{ scroll_area_id }}" disabled>
+          <span class="sr-only">{{ 'general.accessibility.previous' | t }}</span>
+          <span class="animated-arrow animated-arrow--reverse"></span>
+        </button>
+  
+        <button is="next-button" class="circle-button circle-button--fill border group" aria-controls="{{ scroll_area_id }}">
+          <span class="sr-only">{{ 'general.accessibility.next' | t }}</span>
+          <span class="animated-arrow"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{% schema %}
+  {
+    "name": "Collection Subcategory",
+    "class": "shopify_subcategory",
+    "templates":["collection"],
+    "settings": [
+      {
+        "type": "select",
+        "id": "block_size",
+        "label": "Block size",
+        "options": [
+          {
+            "value": "small",
+            "label": "Small"
+          },
+          {
+            "value": "medium",
+            "label": "Medium"
+          },
+          {
+            "value": "large",
+            "label": "Large"
+          }
+        ],
+        "default": "medium"
+      },
+      {
+        "type": "header",
+        "content": "Colors"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "overlay_color",
+        "label": "Overlay",
+        "default": "#000000"
+      },
+      {
+        "type": "range",
+        "id": "overlay_opacity",
+        "label": "Overlay opacity",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "default": 0
+      }
+    ]
+  }
+{% endschema %}

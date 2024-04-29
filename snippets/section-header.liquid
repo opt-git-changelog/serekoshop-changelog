@@ -1,0 +1,51 @@
+{%- comment -%}
+----------------------------------------------------------------------------------------------------------------------
+SECTION HEADER
+----------------------------------------------------------------------------------------------------------------------
+
+This component renders a section header, which is a pattern in many sections of the theme.
+
+********************************************
+Supported variables
+********************************************
+
+* subheading: the subheading (if any)
+* heading: the heading to show
+* heading_color: the color heading
+* heading_gradient: the optional gradient to use for the heading
+* content: an optional content to show
+* text_alignment: can be "start", "center" or "end" (default to start, which is a left alignment on LTR environment)
+* link_text: the text of the link
+* link_url: the link URL
+{%- endcomment -%}
+
+{% if subheading != blank or heading != blank or content != blank or link_text != blank %}
+  <section-header class="section-header {{ heading }} {% if text_alignment != blank %}justify-{{ text_alignment | escape }} justify-items-{{ text_alignment | escape }} text-{{ text_alignment | escape }}{% endif %}">
+    {%- if subheading != blank or heading != blank or content != blank -%}
+      <div class="prose animate slideUp">
+        {%- if subheading != blank -%}
+          <p class="bold">{{- subheading -}}</p>
+        {%- endif -%}
+
+        {%- if heading != blank -%}
+          <h2 class="h2 an-target" {% if settings.heading_apparition != 'none' %}reveal-on-scroll="true"{% endif %}>
+            {%- render 'styled-text', content: heading, text_color: heading_color, gradient: heading_gradient, apparition_effect: true -%}
+          </h2>
+        {%- endif -%}
+
+        {{- content -}}
+        {% if sec != blank and sec == "after-before" %}
+          <svg xmlns="http://www.w3.org/2000/svg" id="our_blens_arrows" width="122" height="91" viewBox="0 0 122 91" fill="none"><g clip-path="url(#clip0_1_220)"><path d="M12.0621 12.9474C36.5219 8.78795 64.7022 6.0795 85.3693 22.8326C104.612 38.4901 104.104 64.4986 102.807 87.079C102.741 87.8849 104.039 88.2282 104.122 87.3346C105.402 64.8419 105.997 38.8504 87.2952 22.7522C66.4114 4.77439 37.1622 7.36601 11.9501 11.6521C11.1977 11.7787 11.2051 13.1447 12.0621 12.9474Z" fill="#8B89C2"/><path d="M109.666 76.1319C107.411 80.2419 105.157 84.3519 102.902 88.4619C103.27 88.4424 103.708 88.5276 104.163 88.5252C101.93 83.6337 99.6805 78.83 97.4476 73.9385C97.058 73.1351 95.7822 73.6148 96.1718 74.4182C98.4047 79.3097 100.655 84.1134 102.887 89.0049C103.153 89.5113 103.854 89.6476 104.149 89.0681C106.403 84.9581 108.658 80.8481 110.912 76.7381C111.346 75.9127 110.099 75.3065 109.666 76.1319Z" fill="#8B89C2"/></g><defs><clipPath id="clip0_1_220"><rect width="69.6495" height="110.011" fill="white" transform="translate(121.562 21.9548) rotate(101.002)"/></clipPath></defs></svg>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if link_text != blank -%}
+      <a href="{{ link_url }}" class="text-with-icon group">
+        <span class="reversed-link">{{- link_text -}}</span>
+        <span class="circle-chevron group-hover:colors">{%- render 'icon' with 'chevron-right-small', direction_aware: true -%}</span>
+      </a>
+    {%- endif -%}
+    
+  </section-header>
+{%- endif -%}

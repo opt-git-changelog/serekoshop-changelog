@@ -1,0 +1,227 @@
+<div class="journal">
+  <div class="bl_banner">
+    {% if section.settings.banner_image != blank %}
+      <div class="bl_banner_box">
+        <img src="{{ section.settings.banner_image | img_url:'1597x' }}" title="{{ blog.title }}" alt="{{ section.settings.banner_image.alt | default:blog.title }}">
+      </div>
+    {% endif %}
+    <div class="bl_header text_{{ section.settings.text_alignment }}">
+      <div class="side-page-wrap">
+        <h1 class="side-page-title text-center">{{ section.settings.title | default: blog.title }}</h1>
+      </div>
+      {% comment %}<p>{{ section.settings.title | default: blog.title }}</p>{% endcomment %}
+    </div>
+    <div id="circle">
+      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="300px" height="300px" viewBox="0 0 300 300" enable-background="new 0 0 300 300" xml:space="preserve">
+          <defs>
+              <path id="circlePath" d="M 150, 150 m -60, 0 a 60,60 0 0,1 120,0 a 60,60 0 0,1 -120,0 "/>
+          </defs>
+          <circle cx="150" cy="150" r="75" fill="none"/>
+          <g>
+              <use xlink:href="#circlePath" fill="none"></use>
+              <text fill="#000">
+                  <textPath xlink:href="#circlePath">- First Time In India - First Time In India</textPath>
+              </text>
+          </g>
+      </svg>
+    </div>
+  </div>
+
+  {% if blog.articles_count > 0 %}
+    {% if blog.all_tags.size > 0 and section.settings.show_categories %}
+      <div class="bl_filter">
+        {% assign alphabets = 'a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z' | split:',' %}
+        {% assign cutt_tag_size = current_tags | size %}
+      
+        {% assign char = '' %}
+        {% for tag in blog.all_tags %}
+          {% unless tag contains 'IPA_' %}
+            {% capture first_char %}{{ tag | downcase }}{% endcapture %}
+            {% unless char contains first_char %}
+              {% assign char = char | join:',' %}
+              {% assign char = char | append:',' | append:first_char %}
+              {% assign char = char | split:',' %}
+            {% endunless %}
+          {% endunless %}
+        {% endfor %}
+    
+        <ul>
+          <li{% if cutt_tag_size == 0 %} class="active"{% endif %}>
+            <a href="{{ blog.url }}"  class="all_filter">All</a>
+          </li>
+          {% for letter in alphabets %}
+            {% assign ltr = letter | upcase %}
+            <li class="{% unless char contains letter %}disabled{% endunless %}{% if current_tags contains ltr %} active{% endif %}">
+              <a href="{{ blog.url | append:'/tagged/' | append:ltr }}">{{ ltr }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+     
+    {% if section.settings.show_search %}
+      <div class="bl_search">
+        <form class="main-search-form" action="{{ routes.search_url }}" method="get" role="search">
+          <div class="search-input">
+            <input type="search" name="q" value="" placeholder="Search for..." autocomplete="off" spellcheck="false" aria-label="Search">
+            <input type="hidden" name="type" value="article">
+            <button type="submit">
+              <svg role="presentation" stroke-width="1.5" focusable="false" width="22" height="22" class="icon icon-search" viewBox="0 0 22 22"><circle cx="11" cy="10" r="7" fill="none" stroke="currentColor"></circle><path d="m16 15 3 3" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </button>
+          </div>
+        </form>
+      </div>
+    {% endif %}
+  
+    <div class="bl_grid">
+      {%- paginate blog.articles by section.settings.article_per_page -%}
+        <div class="news-listing">
+          {% for article in blog.articles %}
+            <article class="news-article">
+              <div class="news-item-box">
+                <div class="news__image">
+                  <div class="news-size-cover">
+                    <a href="javascript:void(0)" class="news__image-link">
+                      {% if article.metafields.article.hover_image != blank %}
+                        <img src="{{ article.metafields.article.hover_image | img_url:'452x' }}" title="{{ article.title }}" alt="{{ article.title }}">
+                      {% endif %}
+                    </a>      
+                  </div>
+                  <div class="news_text">
+                    <div class="news-head">
+                      <h2>{{ article.title }}</h2>
+                      {% for art_tag in article.tags %}
+                        {% if art_tag contains 'IPA_' %}
+                          <p>{{ art_tag | split:'IPA_' | last }}</p>
+                        {% endif %}
+                      {% endfor %}
+                    </div>
+                    <div class="news-foot">
+                      {% if article.excerpt != blank %}
+                        <p class="news__para">{{ article.excerpt | replace:'<p>', '' | replace:'</p>', '' }}</p>
+                      {% endif %}
+                      {% comment %}
+                      <a href="javascript:void(0)" class="news__cta">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 47">
+                          <path d="M0.826214 46.9974C0.10355 46.8657 -0.261284 45.925 0.321238 45.3478L25.6537 23.4843L0.321238 1.6208C0.321238 1.6208 -0.0945168 1.18288 0.0199318 0.691334C0.164278 0.0709076 0.987846 -0.220253 1.53767 0.191795L27.6975 22.7698C28.095 23.1621 28.1067 23.7948 27.6975 24.1988L1.53767 46.7768C1.38071 46.894 1.3438 47.0196 0.826214 46.9974Z"/>
+                        </svg>
+                      </a>
+                      {% endcomment %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          {% endfor %}
+        </div>   
+        {%- render 'pagination', paginate: paginate -%}
+      {% endpaginate %}
+    </div>
+  {% else %}
+    
+  {% endif %}
+</div>
+
+<style>
+  .news-size-cover {
+    background-color: {{ section.settings.back_color }};
+  }
+  .news-head h2, .news__para, .news-head p {
+    color: {{ section.settings.txt_color }};
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Glossary",
+    "settings": [
+      {
+        "type":"image_picker",
+        "id":"banner_image",
+        "label":"Banner image"
+      },
+      {
+        "type":"text",
+        "id":"title",
+        "label":"Title"
+      },
+      {
+        "type": "select",
+        "id": "text_alignment",
+        "options": [
+          {
+            "value": "top_left",
+            "label": "Top Left"
+          },
+          {
+            "value": "top_center",
+            "label": "Top Center"
+          },
+          {
+            "value": "top_right",
+            "label": "Top Right"
+          },
+          {
+            "value": "center_left",
+            "label": "Center Left"
+          },
+          {
+            "value": "center_center",
+            "label": "Center"
+          },
+          {
+            "value": "center_right",
+            "label": "Center Right"
+          },
+          {
+            "value": "bottom_left",
+            "label": "Bottom Left"
+          },
+          {
+            "value": "bottom_center",
+            "label": "Bottom Center"
+          },
+          {
+            "value": "bottom_right",
+            "label": "Bottom Right"
+          }
+        ],
+        "default": "bottom_left",
+        "label": "Title Alignment "
+      },
+      {
+        "type":"checkbox",
+        "id":"show_categories",
+        "label":"Show tags"
+      },
+      {
+        "type":"checkbox",
+        "id":"show_search",
+        "label":"Show search"
+      },
+      {
+        "type":"range",
+        "id":"article_per_page",
+        "label":"Article per page",
+        "min":3,
+        "max":12,
+        "step":3,
+        "default":3
+      },
+      {
+        "type":"header",
+        "content":"Colors"
+      },
+      {
+        "type":"color",
+        "id":"back_color",
+        "label":"Background color"
+      },
+      {
+        "type":"color",
+        "id":"txt_color",
+        "label":"Text color"
+      }
+    ]
+  }
+{% endschema %}

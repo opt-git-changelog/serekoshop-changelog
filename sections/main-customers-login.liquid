@@ -1,0 +1,232 @@
+{%- comment -%}
+------------------------------------------------------------------------------------------------------------------------
+LIQUID
+------------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+<div class="sm:container">
+  <div class="customer-form">
+    {%- if section.settings.image != blank -%}
+      {{- section.settings.image | image_url: width: section.settings.image.width | image_tag: loading: 'lazy', sizes: '50vw', widths: '300,400,500,600,700,800,1000,1200,1400', class: 'customer-form__image rounded' -}}
+    {%- endif -%}
+
+    <div {% render 'surface', class: 'customer-form__box', background_gradient: section.settings.background_gradient, background: section.settings.background, text_color: section.settings.text_color %}>
+      <account-login class="customer-form__box-inner text-center">
+        {%- form 'recover_customer_password', class: 'form recovery_form_main' -%}
+          {% assign is_rec_err = false %}
+          {% assign is_rec_scs = false %}
+        
+          {%- if form.errors -%}
+            {% assign is_rec_err = true %}
+          {%- endif -%}
+          {%- if form.posted_successfully? -%}
+            {% assign is_rec_scs = true %}
+          {%- endif -%}
+        {% endform %}
+        <div id="login" class="v-stack gap-12"{% if is_rec_err or is_rec_scs %} hidden{% endif %}>
+          {%- assign content = 'customer.login.title' | t -%}
+          <h1 class="h2 text-center">{{ content }}</h1>
+          {% comment %}
+          <div class="side-page-wrap">
+            <h1 class="h2 side-page-title">
+              {%- assign content = 'customer.login.title' | t -%}
+              {%- render 'styled-text', content: content, gradient: section.settings.heading_gradient -%}
+            </h1>
+          </div>
+          {% endcomment %}
+
+          <div class="v-stack gap-6">
+            {%- for block in section.blocks -%}
+              {%- case block.type -%}
+                {%- when '@app' -%}
+                {%- render block -%}
+
+                {%- when 'liquid' -%}
+                  {%- if block.settings.liquid != blank -%}
+                    <div {{ block.shopify_attributes }}>
+                      {{- block.settings.liquid -}}
+                    </div>
+                  {%- endif -%}
+
+                {%- when 'fields' -%}
+                  <div {{ block.shopify_attributes }}>
+                    {%- form 'customer_login', class: 'form' -%}
+                      <input type="hidden" name="checkout_url" value="{{ block.settings.return_to | default: routes.account_url }}">
+
+                      <div class="fieldset">
+                        {%- if form.errors -%}
+                          {%- render 'banner', content: form.errors.messages['form'], status: 'error' -%}
+                        {% else %}
+                          {%- assign icon = 'error' -%}
+                          <div class="banner banner--error justify-center" style="display: none;">
+                            {%- render 'icon' with icon, width: icon_width, height: icon_width, class: 'offset-icon' -%}<p></p>
+                          </div>
+                        {%- endif -%}
+
+                        {%- assign email_label = 'customer.login.email' | t -%}
+                        {%- render 'input', type: 'email', name: 'customer[email]', class:' email', label: email_label, autocomplete: 'email', required: false -%}
+
+                        {%- assign password_label = 'customer.login.password' | t -%}
+                        {%- render 'input', type: 'password', name: 'customer[password]', class:' login_password', label: password_label, autocomplete: 'current-password', required: false -%}
+
+                        <div class="fieldset-link justify-self-start recover_btn">
+                          <a href="#" class="link text-sm text-subdued">{{ 'customer.login.forgot_password' | t }}</a>
+                        </div>
+                      </div>
+
+                      {%- assign submit_label = 'customer.login.submit' | t -%}
+                      {%- render 'button', content: submit_label, type: 'submit', style: 'fill', size: 'xl', is_login:true, stretch: true, secondary: true, background: section.settings.button_background, text_color: section.settings.button_text_color -%}
+
+                      <div>
+                        <a href="{{ routes.account_register_url }}" class="link text-subdued">{{ 'customer.login.sign_up' | t }}</a>
+                      </div>
+                    {%- endform -%}
+                  </div>
+                {%- endcase -%}
+            {%- endfor -%}
+          </div>
+        </div>
+
+        <div id="recover" class="v-stack gap-12"{% unless is_rec_err or is_rec_scs %} hidden{% endunless %}>
+          {%- assign content = 'customer.recover_password.title' | t -%}
+          <h1 class="h2 text-center">{{ content }}</h1>
+          {% comment %}
+          <div class="side-page-wrap">
+            <h2 class="h2 side-page-title">
+              {%- assign content = 'customer.recover_password.title' | t -%}
+              {%- render 'styled-text', content: content, gradient: section.settings.heading_gradient -%}
+            </h1>
+          </div>
+          {% endcomment %}
+
+          {%- form 'recover_customer_password', class: 'form recovery_form_main' -%}
+            <div class="fieldset">
+              {%- if form.errors -%}
+                {%- render 'banner', content: form.errors.messages['form'], status: 'error' -%}
+              {% else %}
+                {%- assign icon = 'error' -%}
+                <div class="banner banner--error justify-center" style="display: none;">
+                  {%- render 'icon' with icon, width: icon_width, height: icon_width, class: 'offset-icon' -%}<p></p>
+                </div>
+              {%- endif -%}
+
+              {%- if form.posted_successfully? -%}
+                {%- assign success_message = 'customer.recover_password.success_message' | t -%}
+                {%- render 'banner', status: 'success', content: success_message -%}
+              {%- else -%}
+                {%- assign email_label = 'customer.recover_password.email' | t -%}
+                {%- render 'input', type: 'email', name: 'email', label: email_label, class:' email', autocomplete: 'email', required: false -%}
+              {%- endif -%}
+            </div>
+
+            {%- unless form.posted_successfully? -%}
+              {%- assign submit_label = 'customer.recover_password.submit' | t -%}
+              {%- render 'button', content: submit_label, type: 'submit', style: 'fill', size: 'xl', stretch: true, secondary: true, background: section.settings.button_background, text_color: section.settings.button_text_color -%}
+            {%- endunless -%}
+
+            <div>
+              <a href="#" class="link text-subdued return_to_login">{{ 'customer.recover_password.back_to_login' | t }}</a>
+            </div>
+          {%- endform -%}
+        </div>
+      </account-login>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    if (window.location.hash === '#recover-password' || window.location.hash === '#recover') {
+      $("#login").prop("hidden", true);
+      $("#recover").removeAttr("hidden");
+    }
+    
+    $(".recover_btn").click(function(){
+      $("#login").prop("hidden", true);
+      $("#recover").removeAttr("hidden");
+    });
+    $(".return_to_login").click(function(){
+      $("#recover").prop("hidden", true);
+      $("#login").removeAttr("hidden");
+    });
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Customer login",
+  "class": "shopify-section--main-customers-login",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "1400 x 1400px .jpg recommended. Does not show on mobile."
+    },
+    {
+      "type": "header",
+      "content": "Colors",
+      "info": "Gradient replaces solid colors when set."
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text"
+    },
+    {
+      "type": "color_background",
+      "id": "heading_gradient",
+      "label": "Heading gradient"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Button background"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    },
+    {
+      "type": "fields",
+      "name": "Fields",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "url",
+          "id": "return_to",
+          "label": "Redirect upon login",
+          "info": "Default to customer account page."
+        }
+      ]
+    },
+    {
+      "type": "liquid",
+      "name": "Liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "liquid",
+          "label": "Liquid"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

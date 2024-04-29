@@ -1,0 +1,43 @@
+{% if product.metafields.product.image_with_text != blank %}
+  <div class="section">
+    <div class="images-with-text-wrap images-with-text-wrap">
+      {{ product.metafields.product.image_with_text }}
+    </div>
+  </div>
+
+  <style>
+    .images-with-text h4 {
+      color: {{ section.settings.heading_color }}
+    }
+
+    .images-with-text span, .images-with-text p {
+      color: {{ section.settings.text_color }}
+    }
+  </style>
+{% endif %}
+{% schema %}
+  {
+    "name": "Image with text",
+    "class": "shopify-section--multiple-images-with-text",
+    "templates":["product"],
+    "limit":1,
+    "tag":"section",
+    "settings": [
+      {
+        "type":"color",
+        "id":"text_color",
+        "label":"Text color"
+      },
+      {
+        "type":"color",
+        "id":"heading_color",
+        "label":"Heading color"
+      }
+    ],
+    "presets":[
+      {
+        "name": "Image with text"
+      }
+    ]
+  }
+{% endschema %}

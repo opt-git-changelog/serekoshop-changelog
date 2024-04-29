@@ -1,0 +1,336 @@
+{%- render 'section-spacing-collapsing' -%}
+
+{%- assign text_position = section.settings.text_position -%}
+
+<style>
+  #shopify-section-{{ section.id }} {
+    --section-stack-intro: 50%;
+    --section-stack-main: 50%;
+  }
+</style>
+
+<div {% render 'section-properties', class: 'gap-12 v-stack' %}>
+  {%- assign text_position = section.settings.text_position -%}
+  
+  
+  <div class="section-stack {% if text_position != 'center' %}section-stack--horizontal{% else %}section-stack--center{% endif %} {% if text_position == 'end' %}section-stack--reverse{% endif %}">
+
+    <div class="section-stack__main">
+      <div>
+        <h1 class="bulk-text-heading">WHAT’S SPECIAL?</h1>
+      </div><br>
+      <div class="bulk-text-subheading" style="padding: 2%;">
+
+        <h3>*Premium Products*</h3>
+        <li>Our products are clinically tested and specially formulated with the highest quality ingredients to address stress-related skin issues and put the mind at ease.</li>
+        <li>These gift sets are mindfully curated to induce a feeling of luxurious relaxation during your skincare rituals.</li>
+        <li>We have worked hard to design premium packaging for our Gift Sets that looks vibrant and festive to brighten up any occasion and help you build stronger connections.</li> <br>
+        
+        <h3>*Fastest Shipping*</h3>
+        <li>All orders are dispatched within 24 hours of purchase. You can expect hassle-free delivery within 2-3 days of placing your order.</li> <br>
+        
+        <h3>*Bulk Discounts*</h3>
+        <li>Buy more for less! You can grab amazing discount deals on bulk orders provided you meet our minimum order quantity.</li> <br>
+        
+        <h3>*Customisable*</h3>
+        <li>Our Gift Sets can be customised as per your needs, provided they meet the minimum order quantity.</li> <br>
+
+        <h3>*Corporate Gifting Solutions*</h3>
+        <li>We offer customisable Gift Sets for all your corporate gifting needs and enhance any occasion. Contact us for more details, and don’t miss out on our incredible deals!</li> <br>
+
+        <h3>*B2B*</h3>
+        <li>We can take care of all your B2B gifting needs with our special bulk deals and build stronger professional connections.</li> <br>
+
+        <h3>*Credibility*</h3>
+        <li>All our products are formulated with natural ingredients of the highest quality and are cruelty-free, clinically tested, mineral oil free, sulphate free and suited to all skin types.</li><br>
+
+      </div>
+          
+    </div>
+  
+    
+    <div class="section-stack__main">
+      <div {% render 'surface', class: 'contact-form rounded', background: section.settings.contact_background, text_color: section.settings.contact_text_color, background_fallback: 'bg-secondary' %}>
+        {%- capture contact_form_id -%}contact-form-{{ section.id }}{%- endcapture -%}
+
+        {%- form 'contact', id: contact_form_id, class: 'form' -%}
+          <div class="fieldset">
+            {%- if form.posted_successfully? -%}
+              {%- capture content -%}{{- 'contact.form.success_message' | t -}}{%- endcapture -%}
+              {%- render 'banner', status: 'success', content: content -%}
+            {%- endif -%}
+
+            {%- if form.errors -%}
+              {%- capture content -%}{{ form.errors.translated_fields[form.errors.first] | capitalize }} {{ form.errors.messages[form.errors.first] }}{%- endcapture -%}
+              {%- render 'banner', content: content, status: 'error' -%}
+            {% else %}
+              {%- assign icon = 'error' -%}
+              <div class="banner banner--error justify-center" style="display: none;">
+                {%- render 'icon' with icon, width: icon_width, height: icon_width, class: 'offset-icon' -%}<p></p>
+              </div>
+            {%- endif -%}
+
+            <div class="input-row">
+              {%- capture label -%}{{ 'bulkcontact.form.firstname' | t }}{%- endcapture -%}
+              {%- render 'input', type: 'text', name: 'contact[first name]', class:' cont_firstname', label: label, value: customer.first_name, autocomplete: 'first name' -%}
+
+              {%- capture label -%}{{ 'bulkcontact.form.lastname' | t }}{%- endcapture -%}
+              {%- render 'input', type: 'text', name: 'contact[last name]', class:' cont_lastname', label: label, value: customer.last_name, autocomplete: 'last name' -%}
+            </div>
+
+            <div class="input-row">
+              {%- capture label -%}{{ 'bulkcontact.form.email' | t }}{%- endcapture -%}
+              {%- render 'input', type: 'email', name: 'contact[email]', class:' cont_email', label: label, value: customer.email, autocomplete: 'email' -%}
+
+              {%- capture label -%}{{ 'bulkcontact.form.phone' | t }}{%- endcapture -%}
+              {%- render 'input', type: 'tel', name: 'contact[phone]', class:' cont_phone', label: label, value: customer.phone, autocomplete: 'phone' -%}
+            </div>
+
+            <div class="input-row">
+              How many units are you looking to purchase?
+              {%- capture label -%}{{ 'bulkcontact.form.UnitsPurchase' | t }}{%- endcapture -%}
+              {%- render 'input', type: 'number', name: 'contact[UnitsPurchase]', class:' cont_UnitsPurchase', label: label, value: customer.UnitsPurchase, autocomplete: 'UnitsPurchase' -%}
+
+              <p>Estimated Budget Per Piece (Exclusive of Taxes)</p>          
+              {%- capture label -%}{{ 'bulkcontact.form.BudgetPerPiece' | t }}{%- endcapture -%}
+              {%- render 'input', type: 'number', name: 'contact[BudgetPerPiece]', class:' cont_BudgetPerPiece', label: label, value: customer.BudgetPerPiece, autocomplete: 'BudgetPerPiece' -%}
+            </div>
+            
+            <fieldset>
+              <p>Purpose Of Purchase:</p>
+              <legend>{{ 'bulkcontact.form.GiftingOptions' | t }}</legend>
+            
+              <label>
+                <input type="radio" name="contact[GiftingOption]" value="Festive Gifting" {% if customer.GiftingOption == 'Festive Gifting' %}checked{% endif %}>
+                Festive Gifting
+              </label><br>
+            
+              <label>
+                <input type="radio" name="contact[GiftingOption]" value="Corporate Gifting" {% if customer.GiftingOption == 'Corporate Gifting' %}checked{% endif %}>
+                Corporate Gifting
+              </label><br>
+            
+              <label>
+                <input type="radio" name="contact[GiftingOption]" value="Personal Gifting" {% if customer.GiftingOption == 'Personal Gifting' %}checked{% endif %}>
+                Personal Gifting
+              </label>
+            </fieldset>
+
+          <label for="contact[date]">Expected Delivery Date:</label>
+          <input type="text" id="contact[date]" name="contact[date]" value="{{ customer.date | date: '%d-%m-%Y' }}" placeholder=" DD-MM-YYYY" autocomplete="off">
+
+          <div class="additional-option">
+          <label for="additional-option">Additional Options</label><br>
+          <input type="checkbox" name="contact[additional-option]" value="Gift Wrap"><label for="Gift Wrap"> Gift Wrap</label><br>
+          <input type="checkbox" name="contact[additional-option]" value="Personal Branding/Customization"><label for="Personal Branding/Customization"> Personal Branding/Customization</label><br>
+          <input type="checkbox" name="contact[additional-option]" value="Gift Cards"><label for="Gift Cards"> Gift Cards</label><br>
+          <input type="checkbox" name="contact[additional-option]" value="Business Card"><label for="Business Card"> Business Card</label>
+        </div>
+            
+
+            {%- for block in section.blocks -%}
+              {%- assign field_title = block.settings.title -%}
+
+              {%- if field_title == blank -%}
+                {%- capture field_title -%}Custom field {% increment custom_field %}{%- endcapture -%}
+              {%- endif -%}
+
+              {%- capture name -%}contact[{{ field_title | escape }}]{%- endcapture -%}
+
+              {%- if block.type == 'text' -%}
+                {%- if block.settings.use_long_text -%}
+                  {%- render 'input', name: name, label: block.settings.title, required: block.settings.required, multiline: 4, block: block -%}
+                {%- else -%}
+                  {%- render 'input', type: 'text', name: name, label: block.settings.title, required: block.settings.required, block: block -%}
+                {%- endif -%}
+              {%- elsif block.type == 'dropdown' and block.settings.values != blank -%}
+               {% comment %} {%- assign values = block.settings.values | split: ',' -%}{% endcomment %}
+
+
+                {%- render 'select', options: options, name: name, label: block.settings.title, required: true, block: block -%}
+              {%- endif -%}
+            {%- endfor -%}
+          </div>
+
+          <div class="{% if text_position == 'center' %}justify-self-center{% else%}justify-self-start{% endif %}">
+            {%- capture button_content -%}{{ 'contact.form.submit' | t }}{%- endcapture -%}
+            {%- render 'button', content: button_content, type: 'submit', style:'fill', secondary: true, cls:' contact_us_btn', size: 'xl' -%}
+          </div>
+        {%- endform -%}
+
+      </div>
+      <h1 style="font-size: 35px">Contact Details</h1>
+        <p>Email: <a href="mailto:contact@serekoshop.com">contact@serekoshop.com</a></p>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Contact",
+  "class": "shopify-section--contact",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Contact Us"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Do you have any question?"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Content"
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text position",
+      "options": [
+        {
+          "value": "start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "end",
+          "label": "Right"
+        }
+      ],
+      "default": "start"
+    },
+    {
+      "type":"header",
+      "content":"Contact details"
+    },
+    {
+      "type":"text",
+      "id":"phone_number",
+      "label":"Contact number"
+    },
+    {
+      "type":"text",
+      "id":"email",
+      "label":"Email"
+    },
+    {
+      "type":"richtext",
+      "id":"address",
+      "label":"Address"
+    },
+    {
+      "type":"richtext",
+      "id":"support_time",
+      "label":"Support time"
+    },
+    {
+      "type":"header",
+      "content":"Contact form"
+    },
+    {
+      "type":"text",
+      "id":"handwriting_text",
+      "label":"Handwriting text"
+    },
+    {
+      "type": "header",
+      "content": "Section colors",
+      "info": "Gradient replaces solid colors when set."
+    },
+    {
+      "type": "color",
+      "id": "background",
+      "label": "Background"
+    },
+    {
+      "type": "color_background",
+      "id": "background_gradient",
+      "label": "Background gradient"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading color"
+    },
+    {
+      "type": "color_background",
+      "id": "heading_gradient",
+      "label": "Heading gradient"
+    },
+    {
+      "type": "header",
+      "content": "Contact block colors",
+      "info": "Gradient replaces solid colors when set."
+    },
+    {
+      "type": "color",
+      "id": "contact_background",
+      "label": "Background"
+    },
+    {
+      "type": "color",
+      "id": "contact_text_color",
+      "label": "Text"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "text",
+      "name": "Text field",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "default": "Custom field"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_long_text",
+          "label": "Use long text",
+          "default": false
+        }
+      ]
+    },
+    {
+      "type": "dropdown",
+      "name": "Dropdown",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Name",
+          "default": "Custom field"
+        },
+        {
+          "type": "text",
+          "id": "values",
+          "label": "Values",
+          "info": "Separate each value by a comma.",
+          "default": "value 1, value 2, value 3"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Contact form",
+      "settings": {}
+    }
+  ]
+}
+{% endschema %}

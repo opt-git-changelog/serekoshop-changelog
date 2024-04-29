@@ -1,0 +1,190 @@
+
+<script>
+  let token = null;
+  let isDropdownVisible = false;
+  let isDropdownMobileVisible = false;
+ 
+  function handleDrawer1() {
+    if (token) {
+      console.log(getDeviceWidth(),"get device width function called")
+      if(getDeviceWidth() >= 767){
+      const kwikpassLoggedInElement = document.getElementById("icon-kwikpass");
+      const crossIconElement = document.getElementById("icon-close-kwikpass")
+      const drawerElement = document.getElementById("kwikpass-drawer-desktop")
+      // display cross icon and hide icon-kwikpass if isDropdownVisible = true else display icon-kwikpass and hide cross icon
+      if(isDropdownVisible){
+        drawerElement.style.display = "none";
+        crossIconElement.style.display="none";
+        kwikpassLoggedInElement.style.display="flex";              
+      }else{
+        drawerElement.style.display = "block";
+        crossIconElement.style.display="flex";
+        kwikpassLoggedInElement.style.display="none";   
+      }
+      isDropdownVisible = !isDropdownVisible;
+      }else{
+         const kwikpassLoggedInElement = document.getElementById("icon-kwikpass-mobile");
+      const crossIconElement = document.getElementById("icon-close-kwikpass-mobile")
+      const drawerElement = document.getElementById("kwikpass-drawer-mobile")
+      // display cross icon and hide icon-kwikpass if isDropdownMobileVisible = true else display icon-kwikpass and hide cross icon
+      if(isDropdownMobileVisible){
+        drawerElement.style.display = "none";
+        crossIconElement.style.display="none";
+        kwikpassLoggedInElement.style.display="flex";              
+      }else{
+        drawerElement.style.display = "block";
+        crossIconElement.style.display="flex";
+        kwikpassLoggedInElement.style.display="none";   
+      }
+      isDropdownMobileVisible = !isDropdownMobileVisible;
+      }
+    }
+  }
+
+
+  function updateDOM(isKwikpassLogin = true) {
+    token = getValueFromCookiesOrLocalStorage(XGokwikCoreToken(window.merchantInfo.environment));    
+    const isLogout = sessionStorage.getItem('isLogout');
+    const phoneNumber = getValueFromCookiesOrLocalStorage('notify_phone_number');
+    
+    if ((!token && !isLogout) || (token && !phoneNumber)) {
+           openIframe('kp_sso_token')
+    }
+    
+    const drawerElementMobile = document.getElementById("kwikpass-drawer-mobile")
+    if(drawerElementMobile){
+    if(token){
+        document.getElementById("kp-login-button-header-logo-mobile").style.display = "none"
+        document.getElementById("loggedin-icons-mobile").style.display = "block"
+    }else{
+      document.getElementById("kp-login-button-header-logo-mobile").style.display = "flex"
+      document.getElementById("loggedin-icons-mobile").style.display = "none"
+      drawerElementMobile.style.display = "none"
+    }
+    }
+
+   
+    
+    const drawerElement = document.getElementById("kwikpass-drawer-desktop")
+if(drawerElement){
+    if(token){
+        document.getElementById("kp-login-button-header-logo").style.display = "none"
+        document.getElementById("loggedin-icons").style.display = "block"
+    }else{
+      document.getElementById("kp-login-button-header-logo").style.display = "flex"
+      document.getElementById("loggedin-icons").style.display = "none"
+      drawerElement.style.display = "none"
+    }
+}   
+    if(drawerElement) {
+      drawerElement.style.backgroundColor = "#b6b8db";
+    }
+    if(drawerElementMobile) {
+      drawerElementMobile.style.backgroundColor = "#b6b8db";
+    }
+
+   
+  // shopify logout
+   const logoutLink = document.querySelector('a[href="/account/logout"]');
+      if (logoutLink) {
+
+   logoutLink.removeAttribute("onclick")
+          logoutLink.addEventListener("click", (event) => {
+            event.stopPropagation()
+            handleLogout()
+          })
+        }
+    const logoutElement =  document.getElementById('logout-button-desktop')
+
+    if(logoutElement) logoutElement.addEventListener('click', handleLogout);
+
+    //mobile
+     const logoutElementMobile =  document.getElementById('logout-button-mobile')
+      if(logoutElementMobile) logoutElementMobile.addEventListener('click', handleLogout);
+  }
+
+ let isElementsWithAccountClickable = true;
+
+    const elementsWithAccount = document.querySelectorAll('a[href="/account"]');
+	elementsWithAccount.forEach((element) => {
+        let currentElement = element;
+		element.addEventListener('click', async (e) => {
+          e.preventDefault();
+          handleShopifyLogin(e,"/account")
+		});
+	});
+
+  
+  /* This code is reusable to all merchants except breakpoint */
+
+  // Add a click event listener to the document
+  document.addEventListener('click', function(event) {
+    if(getDeviceWidth() >= 767){
+    const dropdownButton = document.getElementsByClassName('header--icon') ?. [0]
+
+// Check if the clicked element is the dropdown button or inside the dropdown menu
+    const isClickInsideDropdown = dropdownButton.contains(event.target);
+
+// If the click is outside the dropdown, hide the dropdown
+    const kwikpassLoggedInElement = document.getElementById("icon-kwikpass");
+    const crossIconElement = document.getElementById("icon-close-kwikpass")
+    const drawerElement = document.getElementById("kwikpass-drawer-desktop")
+
+    if (! isClickInsideDropdown && isDropdownVisible && token) {
+      drawerElement.style.display = "none";
+      crossIconElement.style.display = "none";
+      kwikpassLoggedInElement.style.display = "flex";
+      isDropdownVisible = ! isDropdownVisible;
+    }
+    }else{
+      //mobile
+      const dropdownButton = document.getElementsByClassName('header--icon--mobile')?.[0]
+
+  // Check if the clicked element is the dropdown button or inside the dropdown menu
+      const isClickInsideDropdown = dropdownButton.contains(event.target);
+  
+  // If the click is outside the dropdown, hide the dropdown
+      const kwikpassLoggedInElement = document.getElementById("icon-kwikpass-mobile");
+      const crossIconElement = document.getElementById("icon-close-kwikpass-mobile")
+      const drawerElement = document.getElementById("kwikpass-drawer-mobile")
+  
+      if (! isClickInsideDropdown && isDropdownMobileVisible && token) {
+        drawerElement.style.display = "none";
+        crossIconElement.style.display = "none";
+        kwikpassLoggedInElement.style.display = "flex";
+        isDropdownMobileVisible = !isDropdownMobileVisible;
+      }
+    }
+
+  });
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateDOM();
+        updateCustomer();
+    });
+
+   window.addEventListener('update-dom', function() {
+     if(getDeviceWidth() >= 767){
+      const kwikpassLoggedInElement = document.getElementById("icon-kwikpass");
+      const crossIconElement = document.getElementById("icon-close-kwikpass")
+      const drawerElement = document.getElementById("kwikpass-drawer-desktop")
+      drawerElement.style.display = "none";
+      crossIconElement.style.display="none";
+      kwikpassLoggedInElement.style.display="flex";   
+     }else{
+       const kwikpassLoggedInElement = document.getElementById("icon-kwikpass-mobile");
+      const crossIconElement = document.getElementById("icon-close-kwikpass-mobile")
+      const drawerElement = document.getElementById("kwikpass-drawer-mobile")
+      drawerElement.style.display = "none";
+      crossIconElement.style.display="none";
+      kwikpassLoggedInElement.style.display="flex";   
+     }
+        updateDOM();
+        updateCustomer();
+    });
+
+</script>
+
+
+<script defer src="https://pdp.gokwik.co/kwikpass/plugin/build/kp-merchant.js"></script>
